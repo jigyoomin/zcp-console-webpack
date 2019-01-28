@@ -85,12 +85,13 @@ function _404 (to, from, next, error) {
   /* error page */
   if (to.path === '/error') {
     to.params.error = { statusCode: 404 }
-  }
-  if (!to.matched.length) {
-    const url = `${location.protocol}//${location.host}/${redirect}#/error`
+  } else if (to.path === '/z') {
+    to.params.error = { statusCode: 404 }
+    next('/error')
+  } else if (!to.matched.length) {
+    const url = `${location.protocol}//${location.host}/${redirect}#/z`
     location.href = url
     return
-    // return next('/error')
   }
 
   /* default */
