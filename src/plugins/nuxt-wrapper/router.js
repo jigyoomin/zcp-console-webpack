@@ -71,9 +71,10 @@ function _404 (to, from, next, error) {
   const redirect = to.path.substr(prefix.length)
   if (redirect.startsWith('redirect:')) {
     const redirect2 = redirect.substr('redirect:'.length + 1)
+    const url = `${location.protocol}//${location.host}/${redirect2}`
 
-    console.log(prefix, redirect2)
-    location.href = redirect2
+    console.log(prefix, url)
+    location.href = url
     return
   }
   if (redirect.startsWith('http')) {
