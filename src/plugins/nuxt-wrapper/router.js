@@ -70,7 +70,7 @@ function _404 (to, from, next, error) {
   const prefix = _.initial(from.path.split('/')).join('/') + '/'
   const redirect = to.path.substr(prefix.length)
   if (redirect.startsWith('redirect:')) {
-    const redirect2 = to.path.substr('redirect:'.length + 1)
+    const redirect2 = redirect.substr('redirect:'.length + 1)
 
     console.log(prefix, redirect2)
     location.href = redirect2
