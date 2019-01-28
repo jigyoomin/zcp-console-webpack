@@ -8,6 +8,7 @@ import Router from 'vue-router'
 import kebabCase from 'lodash/kebabCase'
 import camelCase from 'lodash/camelCase'
 
+import _ from 'underscore'
 import store from '@/store'
 const {config} = store.state
 
@@ -65,22 +66,28 @@ function pathCompareator ({path: s2}, {path: s1}) {
 
 /** Error handlers */
 function _404 (to, from, next, error) {
+  /* handle redirect */
+  const prefix = _.initial(from.path.split('/')).join('/') + '/'
+  const redirect = to.path.substr(prefix.length)
+  if (redirect.startsWith('redirect:')) {
+    const redirect2 = to.path.substr('redirect:'.length + 1)
+
+    console.log(prefix, redirect2)
+    location.href = redirect2
+    return
+  }
+  if (redirect.startsWith('http')) {
+    console.log(prefix, redirect)
+    location.href = redirect
+    return
+  }
+
   /* error page */
   if (to.path === '/error') {
     to.params.error = { statusCode: 404 }
   }
   if (!to.matched.length) {
     return next('/error')
-  }
-
-  /* handle redirect */
-  if (to.path.startsWith('/redirect:')) {
-    location.href = to.path.substr('/redirect:'.length)
-    return
-  }
-  if (to.path.startsWith('/http')) {
-    location.href = to.path.substr(1)
-    return
   }
 
   /* default */
