@@ -55,7 +55,7 @@ export default {
 /* START default2 */
 .toolbar-band { min-width: 100%; min-height: 4px; position: absolute; top: 0; left: 0; background-color: #ea0530; }
 
-.toolbar-title { text-transform: none; color: transparent; }
+.toolbar-title { text-transform: none; color: transparent !important; }
 .toolbar-title .v-chip { height: 15px; width: 65px; font-size: 10px; color: white; background-color: #a93193; }
 .toolbar-title .v-chip .v-chip__content { width: 100%; height: 100%; flex-direction: column; justify-content: center; }
 .toolbar-title div.logo { width: 140px; /* 131px; */ height: 27px; background: url('../assets/logo.png') no-repeat; }
