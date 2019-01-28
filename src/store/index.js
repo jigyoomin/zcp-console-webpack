@@ -79,7 +79,7 @@ const actions = {
       .then((res) => {
         const mapper = (item) => {
           item.title = item.name
-          item.link = item.url
+          item.link = item.url.replace(/\/index.html#/, '')
         }
         res.data.forEach(item => {
           mapper(item)
