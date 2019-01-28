@@ -3,7 +3,7 @@
     :label="_.isUndefined(label) || label ? select[1].label : ''"
     :items="select[1].items"
     item-text="metadata.name" item-value="metadata.name"
-    v-model="ns" menu-props="auto" @input="getMenu()">
+    v-model="ns" menu-props="auto">
   </v-select>
 </template>
 
@@ -23,6 +23,11 @@ export default {
     ...mapState(['select']),
     ...mapFields(['ns'])
   },
+  watch: {
+    ns: function (_new) {
+      _new && this.getMenu()
+    }
+  },
   methods: {
     ...mapMutations(['changeCluster', 'chageNamespace']),
     ...mapActions(['getNamespace', 'getMenu'])
@@ -30,7 +35,6 @@ export default {
   created () {
     // IMPORTANT!! https://github.com/vuejs/vue-test-utils/issues/107
     this.getNamespace()
-    // this.getMenu()
   }
   // nuxt-api (https://ko.nuxtjs.org/api/pages-fetch)
   // fetch: function(){}

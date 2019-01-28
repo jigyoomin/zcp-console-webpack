@@ -13,8 +13,9 @@
           <span class="name" v-if="!active.mini">{{ application.name }}</span>
           <span class="label" v-if="!active.mini">{{ application.label }}</span>
         </v-subheader>
+        <v-progress-linear indeterminate v-if="menus.loading"></v-progress-linear>
 
-        <template v-for="menu in menus">
+        <template v-for="menu in menus.items">
           <!-- single menu item -->
           <v-list-tile v-if="!menu.sub"
             :key="menu.title" :to="menu.link"
@@ -110,7 +111,7 @@
           <!-- profile context menu item -->
           <v-list>
             <template v-for="(item, index) in toolbar">
-              <v-list-tile :key="index">
+              <v-list-tile :key="index" :to="item.link">
                 <v-list-tile-title>{{ item.title }}</v-list-tile-title>
               </v-list-tile>
 

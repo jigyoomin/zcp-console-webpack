@@ -6,24 +6,14 @@ import { getField, updateField } from 'vuex-map-fields' // https://github.com/ma
 Vue.use(Vuex)
 
 const state = {
-  menus: [
-    {
-      title: 'Resources',
-      link: '/resources',
-      icon: 'widgets',
-      sub: [
-        {title: 'Workloads', link: '/resources/workloads'},
-        {title: 'Network', link: '/resources/network'},
-        {title: 'Volume', link: '/resources/volume'}
-      ]
-    },
-    {title: 'Web SSH', link: '/wsh', icon: 'web_asset'},
-    {title: 'Github', link: 'https://github.com/yanghoon/console', icon: 'info', external: true}
-  ],
+  menus: {
+    loading: false,
+    items: []
+  },
   toolbar: [
-    {title: 'Profile', link: '/wsh'},
-    {title: 'Change Password', link: '/code'},
-    {title: 'Configure', link: '/conf', dvider: true},
+    {title: 'Profile', link: '/my/profile'},
+    {title: 'Change Password', link: '/my/pwd'},
+    {title: 'Configure', link: '/my/cli', dvider: true},
     {title: 'Logout', link: '/logout'}
   ],
   select: [
@@ -82,6 +72,8 @@ const actions = {
       })
   },
   getMenu (store) {
+    store.commit('setMenus', {loading: true})
+
     axios
       .get(`/api/menu?namespace=${state.ns}`)
       .then((res) => {
@@ -93,7 +85,7 @@ const actions = {
           mapper(item)
           item.sub && item.sub.forEach(mapper)
         })
-        store.commit('setMenus', res.data)
+        store.commit('setMenus', {loading: false, items: res.data})
       })
   }
 }
