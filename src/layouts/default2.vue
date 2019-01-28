@@ -172,12 +172,11 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .toolbar-band { min-width: 100%; min-height: 4px; position: absolute; top: 0; left: 0; background-color: #ea0530; }
 
-.toolbar-title { text-transform: none; color: transparent !important; }
-.toolbar-title .v-chip { height: 15px; width: 65px; font-size: 10px; color: white; background-color: #a93193; }
-.toolbar-title .v-chip .v-chip__content { width: 100%; height: 100%; flex-direction: column; justify-content: center; }
+.toolbar-title { text-transform: none; color: transparent !important; margin-left: -24px !important; }
+.toolbar-title .v-chip { height: 15px; width: 65px; font-size: 10px; color: white; background-color: #a93193; flex-direction: column; }
 .toolbar-title div.logo { width: 140px; /* 131px; */ height: 27px; background: url('../assets/logo.png') no-repeat; }
 
 .nav-label { height: 49px !important; margin-top: -3px; background-color: #313131; }
@@ -190,8 +189,6 @@ export default {
 .nav-resizer .v-list__tile__action .v-btn:hover { background-color: #757575; }
 .nav-resizer .v-list__tile__action .v-btn .v-icon:nth-child(1) { margin-right: -4px; }
 .nav-resizer .v-list__tile__action .v-btn .v-icon:nth-child(2) { margin-left: -10px; }
-
-.v-toolbar__content { padding: 0px; height: 64px !important; }
 
 .select-group { margin-top: -25px; }
 
