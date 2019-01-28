@@ -8,8 +8,11 @@ import Router from 'vue-router'
 import kebabCase from 'lodash/kebabCase'
 import camelCase from 'lodash/camelCase'
 
+import store from '@/store'
+const {config} = store.state
+
 function makeOptions (pages) {
-  let options = { mode: 'history', routes: [] }
+  let options = { mode: config.router.mode, routes: [] }
 
   for (let [pageName, component] of Object.entries(pages)) {
     let name = camelCase(pageName)

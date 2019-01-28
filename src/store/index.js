@@ -35,7 +35,10 @@ const state = {
   kind: '',
   profile: {},
   config: {
-    layout: process.env.layout
+    layout: process.env.layout,
+    router: {
+      mode: process.env.routerMode
+    }
   }
 }
 

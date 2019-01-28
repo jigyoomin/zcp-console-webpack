@@ -2,6 +2,7 @@
 // https://ko.nuxtjs.org/api/configuration-env/
 module.exports = {
   env: {
-    layout: process.env.LAYOUT || 'default'
+    layout: process.env.LAYOUT || 'default',
+    routerMode: process.env.ROUTER_MODE || 'hash'
   }
 }
