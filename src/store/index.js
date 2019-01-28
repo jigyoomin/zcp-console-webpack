@@ -60,6 +60,9 @@ const mutations = {
   setProfile (state, profile) {
     state.profile = profile
   },
+  setMenus (state, menus) {
+    state.menus = menus
+  },
   updateField
 }
 
@@ -76,6 +79,21 @@ const actions = {
       .get('/api/profile')
       .then((res) => {
         store.commit('setProfile', res.data)
+      })
+  },
+  getMenu (store) {
+    axios
+      .get(`/api/menu?namespace=${state.ns}`)
+      .then((res) => {
+        const mapper = (item) => {
+          item.title = item.name
+          item.link = item.url
+        }
+        res.data.forEach(item => {
+          mapper(item)
+          item.sub && item.sub.forEach(mapper)
+        })
+        store.commit('setMenus', res.data)
       })
   }
 }

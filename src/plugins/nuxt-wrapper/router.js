@@ -78,7 +78,7 @@ function _404 (to, from, next, error) {
   }
   if (redirect.startsWith('http')) {
     console.log(prefix, redirect)
-    location.href = redirect
+    window.open(redirect)
     return
   }
 
@@ -87,7 +87,10 @@ function _404 (to, from, next, error) {
     to.params.error = { statusCode: 404 }
   }
   if (!to.matched.length) {
-    return next('/error')
+    const url = `${location.protocol}//${location.host}/${redirect}#/error`
+    location.href = url
+    return
+    // return next('/error')
   }
 
   /* default */

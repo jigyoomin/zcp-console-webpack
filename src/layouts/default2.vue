@@ -17,16 +17,17 @@
         <template v-for="menu in menus">
           <!-- single menu item -->
           <v-list-tile v-if="!menu.sub"
-            :key="menu.title" :to="menu.link">
-            <v-list-tile-action>
+            :key="menu.title" :to="menu.link"
+            class="nav-item">
+            <v-list-tile-action v-if="menu.icon">
               <v-icon>{{ menu.icon }}</v-icon>
             </v-list-tile-action>
 
             <v-list-tile-content>
-              <v-list-tile-title v-text="menu.title"></v-list-tile-title>
+              <v-list-tile-title v-text="menu.title" class="nav-item-title"></v-list-tile-title>
             </v-list-tile-content>
 
-            <v-flex v-if="!active.mini && menu.link.startsWith('http')">
+            <v-flex text-xs-right pr-1 v-if="!active.mini && menu.link.startsWith('http')">
               <v-icon small>launch</v-icon>
             </v-flex>
           </v-list-tile>
@@ -36,27 +37,27 @@
             :key="menu.title">
 
             <!-- activator -->
-            <v-list-tile slot="activator">
-              <v-list-tile-action>
+            <v-list-tile slot="activator" class="nav-item">
+              <v-list-tile-action v-if="menu.icon">
                 <v-icon>{{ menu.icon }}</v-icon>
               </v-list-tile-action>
 
               <v-list-tile-content>
-                <v-list-tile-title v-text="menu.title"></v-list-tile-title>
+                <v-list-tile-title v-text="menu.title" class="nav-item-title"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <!-- sub menu item -->
-            <v-list-tile no-action v-for="sub in menu.sub" :key="sub.title" :to="sub.link.startsWith('http') ? '' : sub.link">
-              <v-list-tile-action></v-list-tile-action>
+            <v-list-tile no-action v-for="sub in menu.sub" :key="sub.title" :to="sub.link" class="nav-item">
+              <!-- <v-list-tile-action></v-list-tile-action> -->
 
               <v-list-tile-content>
-                <v-list-tile-title>
-                  {{ sub.title }}
+                <v-list-tile-title class="nav-item-title sub">
+                  - {{ sub.title }}
                 </v-list-tile-title>
               </v-list-tile-content>
 
-              <v-flex v-if="sub.link.startsWith('http')">
+              <v-flex text-xs-right class="nav-item-launch sub" v-if="sub.link.startsWith('http')">
                 <v-icon small>launch</v-icon>
               </v-flex>
             </v-list-tile>
@@ -176,12 +177,12 @@ export default {
 .toolbar-band { min-width: 100%; min-height: 4px; position: absolute; top: 0; left: 0; background-color: #ea0530; }
 
 .toolbar-title { margin-left: -24px !important; }
-.toolbar-title::before{ opacity: 0; }
+.toolbar-title::before { opacity: 0; }
 .toolbar-title .v-chip { height: 15px; width: 65px; font-size: 10px; color: white; background-color: #a93193; flex-direction: column; }
 .toolbar-title div.logo { width: 140px; /* 131px; */ height: 27px; background: url('../assets/logo.png') no-repeat; }
 
 .toolbar-profile { text-transform: none; margin-right: -24px !important; }
-.toolbar-profile::before{ opacity: 0; }
+.toolbar-profile::before { opacity: 0; }
 
 .nav-label { height: 49px !important; margin-top: -3px; background-color: #313131; }
 .nav-label .icon  { width: 24px; height: 24px; background: url('../assets/ico-lnbname.png') no-repeat; }
@@ -197,6 +198,11 @@ export default {
 .select-group { margin-top: -25px; }
 
 .app { background-color: #eaedf2 !important; }
+
+.nav-item { color: #444444 !important; }
+.nav-item-title { font-size: 1.25em; font-weight: 500; padding-left: 10px; }
+.nav-item-title.sub { font-size: 1.1em; font-weight: 500; padding-left: 15px; }
+.nav-item-launch.sub { padding-right: 4px; }
 
 /* */
 /* .v-navigation-drawer { width: 225px !important; }
