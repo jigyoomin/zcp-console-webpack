@@ -65,14 +65,25 @@ function pathCompareator ({path: s2}, {path: s1}) {
 
 /** Error handlers */
 function _404 (to, from, next, error) {
+  /* error page */
   if (to.path === '/error') {
     to.params.error = { statusCode: 404 }
   }
-
   if (!to.matched.length) {
     return next('/error')
   }
 
+  /* handle redirect */
+  if (to.path.startsWith('/redirect:')) {
+    location.href = to.path.substr('/redirect:'.length)
+    return
+  }
+  if (to.path.startsWith('/http')) {
+    location.href = to.path.substr(1)
+    return
+  }
+
+  /* default */
   next()
 }
 

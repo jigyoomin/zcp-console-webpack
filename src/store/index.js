@@ -73,9 +73,9 @@ const actions = {
   },
   getProfile (store) {
     axios
-      .get('/api/user/id')
+      .get('/api/profile')
       .then((res) => {
-        store.commit('setProfile', res.data.data)
+        store.commit('setProfile', res.data)
       })
   }
 }

@@ -89,7 +89,7 @@
 
       <!-- logo button -->
       <v-toolbar-items>
-        <v-btn flat class="toolbar-title" to="/" exact-active-class="">
+        <v-btn flat class="toolbar-title" to="redirect:/">
           <div class="logo"/>
           <v-chip x-small>CP</v-chip>
         </v-btn>
@@ -101,7 +101,7 @@
       <v-toolbar-items>
         <v-menu offset-y bottom v-model="active.profile">
           <!-- user name -->
-          <v-btn flat slot="activator">
+          <v-btn flat slot="activator" class="toolbar-profile">
             {{ profile.firstName }}
             <v-icon>{{ active.profile ? 'expand_less' : 'expand_more' }}</v-icon>
           </v-btn>
@@ -175,9 +175,13 @@ export default {
 <style scoped>
 .toolbar-band { min-width: 100%; min-height: 4px; position: absolute; top: 0; left: 0; background-color: #ea0530; }
 
-.toolbar-title { text-transform: none; color: transparent !important; margin-left: -24px !important; }
+.toolbar-title { margin-left: -24px !important; }
+.toolbar-title::before{ opacity: 0; }
 .toolbar-title .v-chip { height: 15px; width: 65px; font-size: 10px; color: white; background-color: #a93193; flex-direction: column; }
 .toolbar-title div.logo { width: 140px; /* 131px; */ height: 27px; background: url('../assets/logo.png') no-repeat; }
+
+.toolbar-profile { text-transform: none; margin-right: -24px !important; }
+.toolbar-profile::before{ opacity: 0; }
 
 .nav-label { height: 49px !important; margin-top: -3px; background-color: #313131; }
 .nav-label .icon  { width: 24px; height: 24px; background: url('../assets/ico-lnbname.png') no-repeat; }
