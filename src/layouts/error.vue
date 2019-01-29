@@ -30,7 +30,7 @@
 
               <v-layout column align-center>
                 <v-btn depressed round large
-                    class="red custom font-weight-bold white--text" to="/">
+                    class="red custom font-weight-bold white--text" to="redirect:/">
                   <!-- <nuxt-link to="/">메인</nux3-link> -->
                   메인
                 </v-btn>

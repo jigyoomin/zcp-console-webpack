@@ -3,16 +3,7 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-const path2regx = require('path-to-regexp')
-const _ = require('underscore')
-
-const username = 'ssang276'
-const RULEs = [
-  {regx: path2regx('/api/cluster/list'), val: undefined},
-  {regx: path2regx('/api/cluster/:cs/namespace/list'), val: `/iam/rbac/${username}/namespace`},
-  {regx: path2regx('/api/resource/:tail*'), val: (exec, req) => `/iam/rbac/${username}/namespace/${req.query.ns}/${exec[1] + exec[2]}`}
-  // {regx: path2regx('/:proxy*'), val: (exec) => exec[1] }
-]
+const {env} = require('../nuxt.config.js')
 
 module.exports = {
   dev: {
@@ -20,29 +11,10 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {
-      "/api": {
-        target: "http://localhost:8181",
-        pathRewrite: function (path, req) {
-          const rule = _.find(RULEs, ({regx}) => regx.test(path)) || {val: path}
-
-          if (typeof rule.val !== 'function') {
-            return rule.val
-          }
-
-          const _exec = rule.regx.exec(path)
-          const _new = rule.val(_exec, req, rule)
-          console.log('matched rule:   ', path)
-          console.log('              ->', _new)
-          console.log('   variables:', JSON.stringify(_exec))
-
-          return _new
-        },
-        ws: true
-      },
-      "/iam": "http://localhost:8181",
-      "/login": "http://localhost:8181/iam/login"
-    },
+    proxyTable: [{
+      context: ['/api', '/iam', '/login', '/logout'],
+      target: env.proxy
+    }],
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST

@@ -66,21 +66,32 @@ function pathCompareator ({path: s2}, {path: s1}) {
 
 /** Error handlers */
 function _404 (to, from, next, error) {
+  /**
+   * Base URL       = http://localhost:8080/context
+   * VueRouter.mode = 'hash'
+   * Case)
+   *   /page/user    (in Vue)     -> http://localhost:8080/context#/page/user    = VueRouter.next()
+   *   /page/product (not in Vue) -> http://localhost:8080/context/page/product  = location.href
+   *   redirect:/page/order       -> http://localhost:8080/context/page/order    = location.href
+   *   http://github.com          -> http://github.com                           = location.href
+   */
   /* handle redirect */
   const prefix = _.initial(from.path.split('/')).join('/') + '/'
-  const redirect = to.path.substr(prefix.length)
-  if (redirect.startsWith('redirect:')) {
-    const redirect2 = redirect.substr('redirect:'.length + 1)
-    const url = `${location.protocol}//${location.host}/${redirect2}`
+  if (to.path.indexOf(prefix) === 0) {
+    const redirect = to.path.substr(prefix.length)
+    if (redirect.startsWith('redirect:')) {
+      const redirect2 = redirect.substr('redirect:'.length + 1)
+      const url = `${location.protocol}//${location.host}/${redirect2}`
 
-    console.log(prefix, url)
-    location.href = url
-    return
-  }
-  if (redirect.startsWith('http')) {
-    console.log(prefix, redirect)
-    window.open(redirect)
-    return
+      console.log(prefix, url)
+      location.href = url
+      return
+    }
+    if (redirect.startsWith('http')) {
+      console.log(prefix, redirect)
+      window.open(redirect)
+      return
+    }
   }
 
   /* error page */
@@ -90,8 +101,13 @@ function _404 (to, from, next, error) {
     to.params.error = { statusCode: 404 }
     next('/error')
   } else if (!to.matched.length) {
-    const url = `${location.protocol}//${location.host}/${redirect}#/z`
-    location.href = url
+    const proxy = new URL(process.env.proxy)
+    proxy.hostname = location.hostname // (proxy.hostname === '0.0.0.0' ? location.hostname : proxy.hostname)
+    proxy.pathname = `${proxy.pathname}/${to.path}`.replace(/\/\//, '/')
+    proxy.hash = '/z'
+
+    console.log(proxy.href, proxy)
+    location.href = proxy.href
     return
   }
 
