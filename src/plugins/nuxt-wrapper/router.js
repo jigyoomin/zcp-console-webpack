@@ -69,10 +69,10 @@ function _404 (to, from, next, error) {
    * Base URL       = http://localhost:8080/context
    * VueRouter.mode = 'hash'
    * Case)
-   *   /page/user    (in Vue)     -> http://localhost:8080/context#/page/user    = VueRouter.next()
-   *   /page/product (not in Vue) -> http://localhost:8080/context/page/product  = location.href
-   *   redirect:/page/order       -> http://localhost:8080/context/page/order    = location.href
-   *   http://github.com          -> http://github.com                           = location.href
+   *   /page/vue             -> http://localhost:8080/context#/page/vue     = VueRouter.next()
+   *   /page/not-vue         -> http://localhost:8080/context/page/product  = location.href
+   *   redirect:/page/order  -> http://localhost:8080/context/page/order    = location.href
+   *   http://github.com     -> http://github.com                           = location.href
    */
   /* handle redirect */
   const prefix = Path.dirname(from.path) + '/'
@@ -100,13 +100,21 @@ function _404 (to, from, next, error) {
     to.params.error = { statusCode: 404 }
     next('/error')
   } else if (!to.matched.length) {
-    const base = process.env.NODE_ENV === 'production' ? location.href : process.env.proxy
-    const proxy = new URL(base)
-    proxy.hostname = location.hostname // (proxy.hostname === '0.0.0.0' ? location.hostname : proxy.hostname)
-    proxy.pathname = Path.join(proxy.pathname, to.path)
-    proxy.hash = '/z'
+    let url
 
-    location.href = proxy.href
+    if (process.env.NODE_ENV === 'production') {
+      url = new URL(location.href)
+    } else {
+      url = new URL(process.env.proxy)
+      url.hostname = location.hostname // (proxy.hostname === '0.0.0.0' ? location.hostname : proxy.hostname)
+    }
+
+    console.log(process.env.context)
+    console.log(to.path)
+    url.pathname = Path.join(process.env.context, to.path)
+    url.hash = '/z'
+
+    location.href = url.href
     return
   }
 

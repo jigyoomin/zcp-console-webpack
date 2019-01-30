@@ -4,6 +4,7 @@ module.exports = {
   env: {
     layout: process.env.LAYOUT || 'default2',
     routerMode: process.env.ROUTER_MODE || 'hash',
-    proxy: process.env.PROXY || 'http://localhost:8181'
+    proxy: process.env.PROXY || 'http://localhost:8181',
+    context: process.env.URL_CONTEXT || ''
   }
 }
