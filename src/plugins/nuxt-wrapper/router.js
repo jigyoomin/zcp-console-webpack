@@ -8,7 +8,6 @@ import Router from 'vue-router'
 import kebabCase from 'lodash/kebabCase'
 import camelCase from 'lodash/camelCase'
 
-import _ from 'underscore'
 import store from '@/store'
 const {config} = store.state
 
@@ -76,7 +75,7 @@ function _404 (to, from, next, error) {
    *   http://github.com          -> http://github.com                           = location.href
    */
   /* handle redirect */
-  const prefix = _.initial(from.path.split('/')).join('/') + '/'
+  const prefix = Path.dirname(from.path) + '/'
   if (to.path.indexOf(prefix) === 0) {
     const redirect = to.path.substr(prefix.length)
     if (redirect.startsWith('redirect:')) {
@@ -103,10 +102,9 @@ function _404 (to, from, next, error) {
   } else if (!to.matched.length) {
     const proxy = new URL(process.env.proxy)
     proxy.hostname = location.hostname // (proxy.hostname === '0.0.0.0' ? location.hostname : proxy.hostname)
-    proxy.pathname = `${proxy.pathname}/${to.path}`.replace(/\/\//, '/')
+    proxy.pathname = Path.join(proxy.pathname, to.path)
     proxy.hash = '/z'
 
-    console.log(proxy.href, proxy)
     location.href = proxy.href
     return
   }
