@@ -100,7 +100,8 @@ function _404 (to, from, next, error) {
     to.params.error = { statusCode: 404 }
     next('/error')
   } else if (!to.matched.length) {
-    const proxy = new URL(process.env.proxy)
+    const base = process.env.NODE_ENV === 'production' ? location.href : process.env.proxy
+    const proxy = new URL(base)
     proxy.hostname = location.hostname // (proxy.hostname === '0.0.0.0' ? location.hostname : proxy.hostname)
     proxy.pathname = Path.join(proxy.pathname, to.path)
     proxy.hash = '/z'
