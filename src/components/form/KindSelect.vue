@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
 
 export default {
@@ -22,6 +22,10 @@ export default {
     ...mapFields(['kind'])
   },
   methods: {
+    ...mapMutations(['setFromQuery'])
+  },
+  created () {
+    this.setFromQuery(this.$route.query)
   }
 }
 </script>

@@ -13,7 +13,8 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: [{
       context: ['/api', '/iam', '/login', '/logout'],
-      target: env.proxy
+      target: env.proxy,
+      ws: true
     }],
 
     // Various Dev Server settings

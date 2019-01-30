@@ -53,6 +53,14 @@ const mutations = {
   setMenus (state, menus) {
     state.menus = menus
   },
+  setFromQuery (state, query) {
+    if (query.ns) {
+      state.ns = query.ns
+    }
+    if (query.kind) {
+      state.kind = query.kind
+    }
+  },
   updateField
 }
 

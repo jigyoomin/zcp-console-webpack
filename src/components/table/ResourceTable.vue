@@ -36,7 +36,7 @@
 
             <!-- for name link -->
             <slot v-else-if="h.id === 'name'" v-bind="scope">
-              <router-link :to="`/resources/${kind}/${scope.item.metadata.name}?cs=-&ns=${ns}`">
+              <router-link :to="`/resource/${kind}/${scope.item.metadata.name}?cs=-&ns=${ns}`">
                 {{ _.property(h.value.split('.'))(scope.item) || '-' }}
               </router-link>
             </slot>

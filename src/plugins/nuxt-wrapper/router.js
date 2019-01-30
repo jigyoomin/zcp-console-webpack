@@ -75,7 +75,7 @@ function _404 (to, from, next, error) {
    *   http://github.com     -> http://github.com                           = location.href
    */
   /* handle redirect */
-  const prefix = Path.dirname(from.path) + '/'
+  const prefix = Path.join(Path.dirname(from.path), '/')
   if (to.path.indexOf(prefix) === 0) {
     const redirect = to.path.substr(prefix.length)
     if (redirect.startsWith('redirect:')) {

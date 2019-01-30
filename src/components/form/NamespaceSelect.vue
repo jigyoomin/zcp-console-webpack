@@ -26,10 +26,17 @@ export default {
   watch: {
     ns: function (_new) {
       _new && this.getMenu()
+    },
+    $route (to, from, next) {
+      // https://stackoverflow.com/a/46403063
+      let params = {}
+      Object.assign(params, this.$route.query)
+      Object.assign(params, this.$route.params)
+      this.setFromQuery(params)
     }
   },
   methods: {
-    ...mapMutations(['changeCluster', 'chageNamespace']),
+    ...mapMutations(['changeCluster', 'chageNamespace', 'setFromQuery']),
     ...mapActions(['getNamespace', 'getMenu'])
   },
   created () {
