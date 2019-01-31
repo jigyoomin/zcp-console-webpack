@@ -67,7 +67,7 @@ const mutations = {
 const actions = {
   getNamespace (store) {
     axios
-      .get(`/api/cluster/${state.select[0].selected}/namespace/list`)
+      .get(`/api/namespaces/list?type=yaml&cs=-&ns=-`)
       .then((res) => {
         store.commit('setNamespaceItem', res.data.items)
       })

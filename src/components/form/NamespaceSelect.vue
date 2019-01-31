@@ -29,18 +29,23 @@ export default {
     },
     $route (to, from, next) {
       // https://stackoverflow.com/a/46403063
-      let params = {}
-      Object.assign(params, this.$route.query)
-      Object.assign(params, this.$route.params)
-      this.setFromQuery(params)
+      this.updateRouteParams()
     }
   },
   methods: {
     ...mapMutations(['changeCluster', 'chageNamespace', 'setFromQuery']),
-    ...mapActions(['getNamespace', 'getMenu'])
+    ...mapActions(['getNamespace', 'getMenu']),
+    updateRouteParams () {
+      let params = {}
+      Object.assign(params, this.$route.query)
+      Object.assign(params, this.$route.params)
+      console.log(params)
+      this.setFromQuery(params)
+    }
   },
   created () {
     // IMPORTANT!! https://github.com/vuejs/vue-test-utils/issues/107
+    this.updateRouteParams()
     this.getNamespace()
   }
   // nuxt-api (https://ko.nuxtjs.org/api/pages-fetch)
