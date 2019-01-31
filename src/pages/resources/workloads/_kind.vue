@@ -32,18 +32,19 @@ const KIND_ITEMS = [
   {text: 'StatefulSets', value: 'sts'},
   {text: 'Pod', value: 'pod'},
   // {text: 'ReplicaController', value: 'sts'},
-  {text: 'ReplicaSet', value: 'pod'},
+  {text: 'ReplicaSet', value: 'rs'},
   {text: 'DaemonSet', value: 'ds'},
   {text: 'CronJob', value: 'cronjob'},
   {text: 'Job', value: 'job'}
 ]
 
 const HEADERS = {
+  deploy: 'Name,Namespace,Age,Action'.split(','),
+  sts: 'Name,Namespace,Age,Action'.split(','),
   pod: 'Name,Node,Status,Restarts,Age,Action'.split(','),
-  svc: 'Name,Selector,ClusterIP,Service-Endpoint,Age,Action'.split(','),
-  cm: 'Name,Data-Key,Age,Action'.split(','),
-  secrets: 'Name,Secret-Type,Data-Key,Age,Action'.split(','),
-  pvc: 'Name,Pvc-Status,Volume,Capacity,Access-Modes,Storage-Class,Age,Action'.split(',')
+  rs: 'Name,Namespace,Age,Action'.split(','),
+  cronjob: 'Name,Namespace,Age,Action'.split(','),
+  job: 'Name,Namespace,Age,Action'.split(',')
 }
 
 export default {
