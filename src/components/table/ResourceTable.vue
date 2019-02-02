@@ -63,6 +63,10 @@
                 </v-btn>
                 <span>Logs</span>
               </v-tooltip>
+
+              <slot name="action-item" v-if="!!$scopedSlots['action-item']"
+                v-bind="scope" :header="h">
+              </slot>
             </slot>
 
             <!-- DEFAULT : just print values -->
@@ -103,6 +107,18 @@ function expand (expr, name) {
 }
 
 const HEADER = _.mapObject({
+  // Deployment
+  'Replicas': 'value=status | align=left',
+  // StatefulSet
+  'Volume-Temp': 'text=VolumeClaim Templates | value=spec.volumeClaimTemplates',
+  // ReplicaSet
+  'Revision': 'value=metadata | align=left',
+  // CronJob
+  'Schedule': 'value=spec.schedule | align=left',
+  'Suspend': 'value=spec.suspend | align=left',
+  'Active': 'value=status.active | align=left',
+  'Last-Schedule': 'text=Last Schedule | value=status.lastScheduleTime | align=left',
+  'Job-History': 'text=History | value=spec | align=left',
   // Pod
   'Name': 'value=metadata.name | sortable | align=left',
   'Namespace': 'value=metadata.namespace | align=left',

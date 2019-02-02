@@ -3,6 +3,9 @@
     <template slot="title">
       <v-layout>
         <kind-select/>
+        <v-btn icon flat color="grey"  @click="updateData()">
+          <v-icon>replay</v-icon>
+        </v-btn>
         <v-spacer></v-spacer>
         <v-text-field v-model="table.keyword" @keyup.esc="table.keyword = undefined"
           hide-details clearable
