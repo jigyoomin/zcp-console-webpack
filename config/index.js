@@ -7,14 +7,61 @@ const {env} = require('../nuxt.config.js')
 
 module.exports = {
   dev: {
+    /**
+     * Ref
+     * - https://webpack.js.org/configuration/dev-server/#devserver-before
+     * - https://github.com/webpack/webpack-dev-server/blob/master/lib/Server.js#L327
+     * - https://github.com/chimurai/http-proxy-middleware#http-proxy-events
+     * 
+     * - http://expressjs.com/en/4x/api.html#req
+     * - https://nodejs.org/ko/docs/guides/anatomy-of-an-http-transaction/
+     */
 
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: [{
       context: ['/api', '/iam', '/login', '/logout'],
-      target: env.proxy,
-      ws: true
+      // target: env.proxy,
+      target: 'https://169.56.77.198',
+      ws: true,
+      onProxyReq: function(preq, req, res){
+        preq.headers = {
+          host: 'console.cloudzcp.io',
+          origin: 'console.cloudzcp.io'
+        }
+
+        if(req.url === '/login'){
+          // https://dmitripavlutin.com/7-tips-to-handle-undefined-in-javascript/
+
+          // preq.query = {
+          //   ...preq.query,
+          //   redirect_uri: 'http://console.cloudzcp.io:3000'
+          // }
+          // preq.url = req.url + '?redirect_uri=http://console.cloudzcp.io:3000'
+          // req.url += '?redirect_uri=http://console.cloudzcp.io:3000'
+        }
+
+        // console.log(preq.url, preq.headers, preq.query)
+        // console.log(req.url, req.headers, req.query)
+        console.log(preq.url, '->', req.url)
+      },
+      onProxyRes (pres, req, res) {
+        let sc = pres.headers['set-cookie'] || []
+        pres.headers['set-cookie'] = sc.map(cookie => {
+          return cookie.replace(/Secure; ?/, '')
+        });
+
+        console.log( pres.headers['set-cookie'] )
+
+        // https://nodejs.org/ko/docs/guides/anatomy-of-an-http-transaction/
+        if (pres.statusCode === 302) {
+          let loc = pres.headers.location;
+          if (loc) {
+            pres.headers.location = loc.replace(env.proxy, 'http://console.cloudzcp.io:3000')
+          }
+        }
+      }
     }],
 
     // Various Dev Server settings
