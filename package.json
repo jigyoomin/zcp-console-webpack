@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "axios": "^0.18.0",
+    "babel-polyfill": "^6.26.0",
     "clipboard-polyfill": "^2.7.0",
     "json-stringify-pretty-compact": "^1.2.0",
     "underscore": "^1.9.1",
