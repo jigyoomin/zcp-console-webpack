@@ -3,7 +3,18 @@
 // see http://vuejs-templates.github.io/webpack for documentation.
 
 const path = require('path')
-const {env} = require('../nuxt.config.js')
+const {URL} = require('url')
+
+const proxyTarget = 'https://console.cloudzcp.io'
+const proxyDns = { 'console.cloudzcp.io': '169.56.77.198' }
+const proxyHeader = {}
+
+let proxy = new URL(proxyTarget)
+if (proxyDns[proxy.host]) {
+  let host = proxy.host
+  proxyHeader.host = host
+  proxy.hostname = proxyDns[host]
+}
 
 module.exports = {
   dev: {
@@ -20,49 +31,39 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: [{
-      context: ['/api', '/iam', '/login', '/logout'],
-      // target: env.proxy,
-      target: 'https://169.56.77.198',
-      ws: true,
-      onProxyReq: function(preq, req, res){
-        preq.headers = {
-          host: 'console.cloudzcp.io',
-          origin: 'console.cloudzcp.io'
-        }
-
-        if(req.url === '/login'){
-          // https://dmitripavlutin.com/7-tips-to-handle-undefined-in-javascript/
-
-          // preq.query = {
-          //   ...preq.query,
-          //   redirect_uri: 'http://console.cloudzcp.io:3000'
-          // }
-          // preq.url = req.url + '?redirect_uri=http://console.cloudzcp.io:3000'
-          // req.url += '?redirect_uri=http://console.cloudzcp.io:3000'
-        }
-
-        // console.log(preq.url, preq.headers, preq.query)
-        // console.log(req.url, req.headers, req.query)
-        console.log(preq.url, '->', req.url)
-      },
-      onProxyRes (pres, req, res) {
-        let sc = pres.headers['set-cookie'] || []
-        pres.headers['set-cookie'] = sc.map(cookie => {
-          return cookie.replace(/Secure; ?/, '')
-        });
-
-        console.log( pres.headers['set-cookie'] )
-
-        // https://nodejs.org/ko/docs/guides/anatomy-of-an-http-transaction/
-        if (pres.statusCode === 302) {
-          let loc = pres.headers.location;
+    proxyTable: [
+      {
+        context: ['/api', '/iam', '/login', '/logout'],
+        target: proxy.href,
+        ws: true,
+        onProxyReq: function(proxyReq, req, res, options){
+          Object.assign(proxyReq.headers || {}, proxyHeader)
+        },
+        onProxyRes (proxyRes, req, res, options) {
+          // https://nodejs.org/ko/docs/guides/anatomy-of-an-http-transaction/
+          // https://github.com/nodejitsu/node-http-proxy/blob/master/lib/http-proxy/passes/web-outgoing.js#L50
+          var loc = proxyRes.headers['location']
           if (loc) {
-            pres.headers.location = loc.replace(env.proxy, 'http://console.cloudzcp.io:3000')
+            var pu = new URL(proxyTarget)
+            var u = new URL(loc)
+
+            if (pu.host === u.host) {
+              u.protocol = 'http'
+              u.host = req.headers['host']
+              proxyRes.headers.location = u.href // vue-router.mode === 'hash'
+
+              console.log(loc, '-> ', u.href)
+            }
           }
+
+          let sc = proxyRes.headers['set-cookie'] || []
+          proxyRes.headers['set-cookie'] = sc.map(cookie => {
+            return cookie.replace(/Secure; ?/, '')
+          });
         }
-      }
-    }],
+      },
+      { '/**': proxy.href }
+    ],
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
