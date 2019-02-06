@@ -83,6 +83,7 @@
   <!-- dialogs for actions -->
   <editor-dialog v-bind="dialog.editor" v-model="dialog.editor.open"/>
   <ssh-dialog v-bind="dialog.ssh" v-model="dialog.ssh.open"/>
+  <log-dialog v-bind="dialog.log" v-model="dialog.log.open"/>
 
   </div>
 </template>
@@ -151,7 +152,8 @@ export default {
     return {
       dialog: {
         editor: { open: false, item: {} },
-        ssh: { open: false, item: {} }
+        ssh: { open: false, item: {} },
+        log: { open: false, item: {} }
       }
     }
   },
