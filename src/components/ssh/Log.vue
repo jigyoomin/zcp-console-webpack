@@ -17,7 +17,7 @@
       </v-layout>
     </form>
 
-    <div class="console"></div>
+    <div ref="console" class="console"></div>
 
   </div>
 </template>
@@ -101,12 +101,23 @@ export default {
       // https://github.com/xtermjs/xterm.js/issues/943#issuecomment-327367759
       term.reset()
 
-      if (this.follow) {
+      let params = {
+        cs: this.cs,
+        ns: this.ns,
+        kind: 'pod',
+        name: this.pod,
+        con: this.con.selected
+      }
+      Object.assign(params, this.param)
+
+      if (this.param.follow) {
         // https://github.com/websockets/wscat/blob/master/bin/wscat#L248
         let server = location.protocol.replace('http', 'ws') + '//' + location.host
         let api = this.api || '/api/logs'
-        let url = `${server}${api}?cs=${this.cs}&ns=${this.ns}&pod=${this.pod}&con=${this.con.selected}&shell=${this.shell.selected}`
-        const ws = new WebSocket(url)
+        let url = `${server}${api}`
+        let query = this.$_.map(params, (v, k) => { return `${k}=${v}` }).join('&')
+
+        const ws = new WebSocket(`${url}?${query}`)
         this.ws = ws
 
         ws.onopen = () => {
@@ -119,15 +130,15 @@ export default {
         ws.onerror = (err) => {
           console.log('error :: ', err)
         }
-        ws.onmessage = (msg) => {
+        ws.onmessage = (res) => {
           // this.terminal.term.write(msg.data)
 
           var term = this.terminal.term
-          var len = this.terminal.cols
+          var len = this.terminal.cols || 80
 
-          console.log(msg.data)
+          console.log(res.data)
 
-          var rows = [msg.data.trim()]
+          var rows = res.data.split('\n')
           for (var i = 0; i < rows.length; i++) {
             term.write(rows[i])
             term.write('\r\n')
@@ -141,13 +152,12 @@ export default {
         }
       } else {
         let api = this.api || '/api/logs'
-        let url = `${api}?cs=${this.cs}&ns=${this.ns}&pod=${this.pod}&con=${this.con.selected}&shell=${this.shell.selected}`
 
         this.$http
-          .get(url)
+          .get(api, {params})
           .then((res) => {
             var term = this.terminal.term
-            var len = this.terminal.cols
+            var len = this.terminal.cols || 80
 
             var rows = res.data.split('\n')
             for (var i = 0; i < rows.length; i++) {
@@ -164,6 +174,11 @@ export default {
       }
     },
     resize () {
+      var wrapper = this.$refs.console // document.getElementsByClassName('console')[0]
+      if (!wrapper) {
+        return
+      }
+
       var term = this.terminal.term
       var parentElementStyle = window.getComputedStyle(term.element.parentElement)
       var attr = {
@@ -187,7 +202,6 @@ export default {
       if (termHeight !== height) {
         termHeight = height
 
-        var wrapper = document.getElementsByClassName('console')[0]
         if (wrapper) {
           wrapper.style['min-height'] = height + 'px'
           wrapper.style['max-height'] = height + 'px'
@@ -200,7 +214,7 @@ export default {
        * Tracking height of the single charactor span.
        * And re-measure before to calcuate new fit size.
        */
-      var m = document.getElementsByClassName('xterm-char-measure-element')[0]
+      var m = wrapper.getElementsByClassName('xterm-char-measure-element')[0]
       if (!m) {
         console.log('!!! mesaure not mounted.')
         return
@@ -247,7 +261,8 @@ export default {
   },
   mounted () {
     // https://github.com/xtermjs/xterm.js/issues/573
-    let terminalContainer = document.getElementsByClassName('console')[0]
+    // https://stackoverflow.com/a/43686560
+    let terminalContainer = this.$refs.console
     let term = new Terminal({
       cursorBlink: true,
       // cols: this.terminal.cols,
@@ -310,5 +325,5 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.console { min-height: 100%; }
+.console { overflow-x: auto; }
 </style>

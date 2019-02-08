@@ -146,7 +146,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .vue-codemirror { text-align: left!important; }
 .CodeMirror { height: 500px; }
 </style>

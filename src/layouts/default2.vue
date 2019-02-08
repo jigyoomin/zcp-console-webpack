@@ -4,6 +4,7 @@
     <v-navigation-drawer fixed left clipped app
         justify-space-between class="white"
         width="225"
+        v-model="active.drawer"
         mini-variant-width="60"
         :mini-variant.sync="active.mini">
 
@@ -88,6 +89,8 @@
     <!-- toolbar -->
     <v-toolbar app clipped-left color="white">
       <div class="toolbar-band"></div>
+      <v-toolbar-side-icon class="toolbar-side-icon hidden-lg-and-up"
+        @click.native="active.drawer = !active.drawer"></v-toolbar-side-icon>
 
       <!-- logo button -->
       <v-toolbar-items>
@@ -177,6 +180,8 @@ export default {
 <style scoped>
 .toolbar-band { min-width: 100%; min-height: 4px; position: absolute; top: 0; left: 0; background-color: #ea0530; }
 
+.toolbar-side-icon { margin-left: -10px; margin-right: 15px; }
+
 .toolbar-title { margin-left: -24px !important; }
 .toolbar-title::before { opacity: 0; }
 .toolbar-title .v-chip { height: 15px; width: 65px; font-size: 10px; color: white; background-color: #a93193; flex-direction: column; }
@@ -185,12 +190,12 @@ export default {
 .toolbar-profile { text-transform: none; margin-right: -24px !important; }
 .toolbar-profile::before { opacity: 0; }
 
-.nav-label { height: 49px !important; margin-top: -3px; background-color: #313131; }
+.nav-label { height: 49px !important; background-color: #313131; }
 .nav-label .icon  { width: 24px; height: 24px; background: url('../assets/ico-lnbname.png') no-repeat; }
 .nav-label .name  { font-size: 1.4rem; letter-spacing: -1px; color: white; padding-left: 10px; font-weight: bold; font-family: "NotoKrR"; /* TODO: from fontface */ }
 .nav-label .label { font-size: 0.9rem; letter-spacing: -0.1px; color: white; padding-left: 10px; font-weight: bold; font-family: "NotoKrR"; /* TODO: from fontface */ }
 
-.nav-resizer { position: fixed; bottom: 0; right: 0; }
+.nav-resizer { position: absolute; bottom: 0; right: 0; background-color: rgba(0,0,0,0) }
 .nav-resizer .v-list__tile__action .v-btn { border-radius: 50px 0px 0px 50px; min-width: 45px; margin: 0px; color: white; position: absolute; right: 0; background-color: #999999; }
 .nav-resizer .v-list__tile__action .v-btn:hover { background-color: #757575; }
 .nav-resizer .v-list__tile__action .v-btn .v-icon:nth-child(1) { margin-right: -4px; }
@@ -209,6 +214,7 @@ export default {
 /* .v-navigation-drawer { width: 225px !important; }
 .v-navigation-drawer--mini-variant { width: 60px !important; } */
 
+.v-navigation-drawer .v-list:nth-child(1){ padding-top: 0px; }
 .v-navigation-drawer--mini-variant { display: flex !important; }
 .v-navigation-drawer--mini-variant .nav-label { display: flex !important; }
 .v-navigation-drawer--mini-variant .v-list .v-list__tile { padding: 0 5px; }

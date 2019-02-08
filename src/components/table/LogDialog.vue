@@ -11,7 +11,7 @@
       </v-card-title>
 
       <v-card-text>
-        <log :info="info"/>
+        <log :info="meta"/>
       </v-card-text>
 
       <v-card-actions>
@@ -31,12 +31,12 @@ export default {
   data () {
     return {
       full: false,
-      info: {
+      meta: {
         show: true,
         // cs: undefined,
         // ns: undefined,
         // selected: {},
-        api: '/api/exec',
+        api: '/api/logs',
         pod: '-',
         con: {items: ['alpine']}
       }
@@ -54,17 +54,17 @@ export default {
   },
   methods: {
     updateInfo () {
-      this.info.show = true
-      this.info.reset = true
-      this.info.selected = {}
+      this.meta.show = true
+      this.meta.reset = true
+      // this.info.selected = {}
 
-      this.info.api = '/api/logs'
-      this.info.pod = this.item.metadata.name
-      this.info.con.items = this._.map(this.item.spec.containers, container => container.name)
+      this.meta.api = '/api/logs'
+      this.meta.pod = this.item.metadata.name
+      this.meta.con.items = this._.map(this.item.spec.containers, container => container.name)
     },
     cleanup () {
       this.full = false
-      this.info.show = false
+      this.meta.show = false
     }
   }
 }

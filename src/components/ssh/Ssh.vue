@@ -27,7 +27,7 @@
       -->
     </form>
 
-    <div class="console" @resize="console.log('xxxx')"></div>
+    <div class="console" ref="console"></div>
 
     <v-snackbar top right absolute :color="'info'"
                 v-model="snackbar.show" :timeout="snackbar.timeout" >
@@ -139,6 +139,11 @@ export default {
       }
     },
     resize () {
+      var wrapper = this.$refs.console // document.getElementsByClassName('console')[0]
+      if (!wrapper) {
+        return
+      }
+
       var term = this.terminal.term
       var parentElementStyle = window.getComputedStyle(term.element.parentElement)
       var attr = {
@@ -162,7 +167,7 @@ export default {
       if (termHeight !== height) {
         termHeight = height
 
-        var wrapper = document.getElementsByClassName('console')[0]
+        // var wrapper = this.$refs.console // document.getElementsByClassName('console')[0]
         if (wrapper) {
           wrapper.style['min-height'] = height + 'px'
           wrapper.style['max-height'] = height + 'px'
@@ -175,7 +180,7 @@ export default {
        * Tracking height of the single charactor span.
        * And re-measure before to calcuate new fit size.
        */
-      var m = document.getElementsByClassName('xterm-char-measure-element')[0]
+      var m = wrapper.getElementsByClassName('xterm-char-measure-element')[0]
       if (!m) {
         console.log('!!! mesaure not mounted.')
         return
@@ -222,7 +227,8 @@ export default {
   },
   mounted () {
     // https://github.com/xtermjs/xterm.js/issues/573
-    let terminalContainer = document.getElementsByClassName('console')[0]
+    // https://stackoverflow.com/a/43686560
+    let terminalContainer = this.$refs.console
     let term = new Terminal({
       cursorBlink: true,
       // cols: this.terminal.cols,
