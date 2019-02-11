@@ -61,7 +61,7 @@ export default {
     return {
       cs: '',
       table: {
-        keywoard: '',
+        keyword: '',
         loading: false,
         data: [],
         headers: HEADERS

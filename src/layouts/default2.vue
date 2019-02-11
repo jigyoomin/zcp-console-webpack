@@ -177,7 +177,7 @@ export default {
 <style scoped>
 .toolbar-band { min-width: 100%; min-height: 4px; position: absolute; top: 0; left: 0; background-color: #ea0530; }
 
-.toolbar-side-icon { margin-left: -10px; margin-right: 15px; }
+.toolbar-side-icon { margin-left: -10px !important; margin-right: 15px !important; }
 
 .toolbar-title { margin-left: -24px !important; }
 .toolbar-title::before { opacity: 0; }
