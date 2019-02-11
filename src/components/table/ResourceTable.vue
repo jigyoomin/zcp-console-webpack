@@ -132,6 +132,11 @@ const HEADER = _.mapObject({
   'ClusterIP': 'align=left | value=spec.clusterIP',
   'Selector': 'align=left | value=spec.selector',
   'Service-Endpoint': 'text=Endpoint | value=spec',
+  // Ingress
+  'Url': 'text=Endpoint | value=_extract',
+  'Service': 'align=left | value=_extract',
+  'Address': 'align=left | value=_extract',
+  'Secret': 'align=left | value=_extract',
   // ConfigMap
   'Labels': 'value=metadata.labels | align=left',
   'Data-Key': 'text=Data | value=data | align=left',
