@@ -36,7 +36,10 @@ export default {
         // cs: undefined,
         // ns: undefined,
         // selected: {},
-        api: '/api/logs',
+        api: {
+          ws: '/api/logs',
+          http: '/api/log'
+        },
         pod: '-',
         con: {items: ['alpine']}
       }

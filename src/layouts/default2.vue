@@ -11,8 +11,8 @@
       <v-list dense>
         <v-subheader class="nav-label">
           <span class="icon"></span>
-          <span class="name" v-if="!active.mini">{{ application.name }}</span>
-          <span class="label" v-if="!active.mini">{{ application.label }}</span>
+          <span class="name" v-if="!active.mini">{{ config.application.product }}</span>
+          <span class="label" v-if="!active.mini">{{ config.application.label }}</span>
         </v-subheader>
         <v-progress-linear indeterminate v-if="menus.loading"></v-progress-linear>
 
@@ -162,18 +162,15 @@ export default {
         drawer: true,
         mini: false,
         profile: false
-      },
-      application: {
-        name: 'ZCP',
-        label: 'local'
       }
     }
   },
   created () {
     this.getProfile()
+    this.getConfig()
   },
-  computed: mapState(['menus', 'toolbar', 'profile']),
-  methods: mapActions(['getProfile'])
+  computed: mapState(['menus', 'toolbar', 'profile', 'config']),
+  methods: mapActions(['getProfile', 'getConfig'])
 }
 </script>
 

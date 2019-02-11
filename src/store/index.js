@@ -11,10 +11,10 @@ const state = {
     items: []
   },
   toolbar: [
-    {title: 'Profile', link: '/my/profile'},
-    {title: 'Change Password', link: '/my/pwd'},
-    {title: 'Configure', link: '/my/cli', dvider: true},
-    {title: 'Logout', link: '/logout'}
+    {title: '나의 정보', link: '/my/profile'},
+    {title: '비밀번호 변경', link: '/my/pwd'},
+    {title: 'CLI Command', link: '/my/cli', dvider: true},
+    {title: '로그아웃', link: '/logout'}
   ],
   select: [
     {label: 'Cluster', items: [], selected: 'cloudzcp-pou-dev'},
@@ -28,6 +28,10 @@ const state = {
     layout: process.env.layout,
     router: {
       mode: process.env.routerMode
+    },
+    application: {
+      product: 'ZCP',
+      label: ''
     }
   }
 }
@@ -60,6 +64,9 @@ const mutations = {
     if (query.kind) {
       state.kind = query.kind
     }
+  },
+  mergeConfig (state, _new) {
+    Object.assign(state.config, _new)
   },
   updateField
 }
@@ -94,6 +101,13 @@ const actions = {
           item.sub && item.sub.forEach(mapper)
         })
         store.commit('setMenus', {loading: false, items: res.data})
+      })
+  },
+  getConfig (store) {
+    axios
+      .get('/api/config')
+      .then((res) => {
+        store.commit('mergeConfig', res.data)
       })
   }
 }

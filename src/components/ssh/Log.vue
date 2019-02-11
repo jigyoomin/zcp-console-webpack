@@ -100,6 +100,7 @@ export default {
 
       // https://github.com/xtermjs/xterm.js/issues/943#issuecomment-327367759
       term.reset()
+      this.disconnect()
 
       let params = {
         cs: this.cs,
@@ -113,7 +114,7 @@ export default {
       if (this.param.follow) {
         // https://github.com/websockets/wscat/blob/master/bin/wscat#L248
         let server = location.protocol.replace('http', 'ws') + '//' + location.host
-        let api = this.api || '/api/logs'
+        let api = this.api.ws || '/api/logs'
         let url = `${server}${api}`
         let query = this.$_.map(params, (v, k) => { return `${k}=${v}` }).join('&')
 
@@ -151,7 +152,7 @@ export default {
           }
         }
       } else {
-        let api = this.api || '/api/logs'
+        let api = this.api.http || '/api/logs'
 
         this.$http
           .get(api, {params})
