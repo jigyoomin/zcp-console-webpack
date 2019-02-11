@@ -2,6 +2,7 @@
   <v-select
     :label="_.isUndefined(label) || label ? select[1].label : ''"
     :items="select[1].items"
+    item-disabled="disabled"
     item-text="metadata.name" item-value="metadata.name"
     v-model="ns" menu-props="auto">
   </v-select>
@@ -10,6 +11,8 @@
 <script>
 import { mapState, mapMutations, mapActions } from 'vuex'
 import { mapFields } from 'vuex-map-fields'
+
+import cookies from 'js-cookie'
 
 export default {
   name: 'ns-select',
@@ -25,7 +28,7 @@ export default {
   },
   watch: {
     ns: function (_new) {
-      _new && this.getMenu()
+      _new && this.getMenu() && this.storeSharedParams()
     },
     $route (to, from, next) {
       // https://stackoverflow.com/a/46403063
@@ -35,10 +38,14 @@ export default {
   methods: {
     ...mapMutations(['changeCluster', 'chageNamespace', 'setFromQuery']),
     ...mapActions(['getNamespace', 'getMenu']),
+    storeSharedParams () {
+      cookies.set('config', {ns: this.ns})
+    },
     updateRouteParams () {
-      let params = {}
-      Object.assign(params, this.$route.query)
+      let params = !this.ns ? (cookies.getJSON('config') || {}) : {}
+
       Object.assign(params, this.$route.params)
+      Object.assign(params, this.$route.query)
       console.log(params)
       this.setFromQuery(params)
     }

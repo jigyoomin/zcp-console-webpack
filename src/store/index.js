@@ -47,6 +47,21 @@ const mutations = {
     state.select[1].items = items
     if (!state.ns) { state.ns = items[0].metadata.name }
   },
+  setDummyNamespaceItem (state) {
+    let items = state.select[1].items
+    let profile = state.profile
+
+    if (items.length === 0 || profile.clusterRole !== 'cluster-admin') {
+      return
+    }
+
+    if (!items[0].disabled) {
+      items.unshift({
+        metadata: { name: '전체' },
+        disabled: true
+      })
+    }
+  },
   setKindItem (state, items) {
     state.select[2].items = items
     if (!state.kind) { state.kind = items[0].value }
@@ -77,6 +92,7 @@ const actions = {
       .get(`/api/namespaces/list?type=yaml&cs=-&ns=-`)
       .then((res) => {
         store.commit('setNamespaceItem', res.data.items)
+        store.commit('setDummyNamespaceItem')
       })
   },
   getProfile (store) {
@@ -84,6 +100,7 @@ const actions = {
       .get('/api/profile')
       .then((res) => {
         store.commit('setProfile', res.data)
+        store.commit('setDummyNamespaceItem')
       })
   },
   getMenu (store) {
