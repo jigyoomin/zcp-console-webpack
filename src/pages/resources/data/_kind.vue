@@ -46,7 +46,7 @@ const KIND_ITEMS = [
 
 const HEADERS = {
   cm: 'Name,Data-Key,Age,Action'.split(','),
-  secrets: 'Name,Secret-Type,Data-Key,Age,Action'.split(',')
+  secret: 'Name,Secret-Type,Data-Key,Age,Action'.split(',')
 }
 
 export default {
@@ -71,7 +71,7 @@ export default {
         return
       }
 
-      const URL = `/api/${this.kind}/list?type=yaml&cs=${this.cs}&ns=${this.ns}`
+      const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
       this.table.loading = true
 
       this.$http

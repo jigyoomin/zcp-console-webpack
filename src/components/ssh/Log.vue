@@ -162,11 +162,12 @@ export default {
 
             var rows = res.data.split('\n')
             for (var i = 0; i < rows.length; i++) {
-              term.write(rows[i])
-              term.write('\r\n')
               len = Math.max(len, rows[i].length)
+              rows[i] = rows[i] + '\r\n'
             }
+            term.write(rows.join(''))
 
+            len = Math.min(160, len)
             if (this.terminal.cols !== len) {
               this.terminal.cols = len
               term.resize(this.terminal.cols, term._core.options.rows)

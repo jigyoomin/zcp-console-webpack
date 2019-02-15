@@ -86,7 +86,7 @@ export default {
         return
       }
 
-      const URL = `/api/${this.kind}/list?type=yaml&cs=${this.cs}&ns=${this.ns}`
+      const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
       this.table.loading = true
 
       this.$http

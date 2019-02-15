@@ -89,7 +89,7 @@ const mutations = {
 const actions = {
   getNamespace (store) {
     axios
-      .get(`/api/namespaces/list?type=yaml&cs=-&ns=-`)
+      .get(`/api/resource/namespaces?type=yaml&cs=-&ns=-`)
       .then((res) => {
         store.commit('setNamespaceItem', res.data.items)
         store.commit('setDummyNamespaceItem')

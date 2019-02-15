@@ -61,7 +61,7 @@ export default {
       this.meta.reset = true
       // this.info.selected = {}
 
-      this.meta.api = '/api/logs'
+      // this.meta.api = '/api/logs'
       this.meta.pod = this.item.metadata.name
       this.meta.con.items = this._.map(this.item.spec.containers, container => container.name)
     },

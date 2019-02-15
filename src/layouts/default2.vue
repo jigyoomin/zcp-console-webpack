@@ -36,7 +36,8 @@
 
           <!-- multiple menu item -->
           <v-list-group v-if="menu.sub"
-            :key="menu.title">
+            :key="menu.title" :group="menu.url"
+            active-class="primary--text nav-active2">
 
             <!-- activator -->
             <v-list-tile slot="activator" class="nav-item">
@@ -44,13 +45,14 @@
                 <v-icon>{{ menu.icon }}</v-icon>
               </v-list-tile-action>
 
-              <v-list-tile-content>
+              <v-list-tile-content >
                 <v-list-tile-title v-text="menu.title" class="nav-item-title"></v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
 
             <!-- sub menu item -->
-            <v-list-tile no-action v-for="sub in menu.sub" :key="sub.title" :to="sub.link" class="nav-item">
+            <v-list-tile no-action v-for="sub in menu.sub" :key="sub.title" :to="sub.link" class="nav-item"
+            active-class="primary--text nav-active sub">
               <!-- <v-list-tile-action></v-list-tile-action> -->
 
               <v-list-tile-content>
@@ -202,10 +204,16 @@ export default {
 
 .app { background-color: #eaedf2 !important; }
 
-.nav-item { color: #444444 !important; }
+.nav-item { color: #444444 !important; caret-color: #444444 !important; }
 .nav-item-title { font-size: 1.25em; font-weight: 500; padding-left: 10px; }
 .nav-item-title.sub { font-size: 1.1em; font-weight: 500; padding-left: 15px; }
 .nav-item-launch.sub { padding-right: 4px; }
+
+/* .v-list__group__header--active .nav-item { caret-color: #ea0530 !important; color: #ea0530 !important; }
+.v-list__tile--active .v-list__tile__content { caret-color: #444444 !important; color: #444444 !important; } */
+
+.nav-active.title * { caret-color: #ea0530 !important; color: #ea0530 !important; }
+.nav-active.sub * { caret-color: #444444!important; color: #444444!important; }
 
 /* */
 /* .v-navigation-drawer { width: 225px !important; }

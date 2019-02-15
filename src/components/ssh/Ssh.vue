@@ -136,6 +136,7 @@ export default {
       }
       ws.onmessage = (msg) => {
         this.terminal.term.write(msg.data)
+        console.log(msg.data)
       }
     },
     resize () {

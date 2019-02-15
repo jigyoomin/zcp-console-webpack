@@ -3,18 +3,12 @@
     <labels slot="annotations" slot-scope="{val}" :labels="val"/>
     <labels slot="labels" slot-scope="{val}" :labels="val"/>
 
-    <template slot="startTime" slot-scope="{val}">
-      {{ val | moment('YYYY-MM-DD A hh:mm:ss') }}
-    </template>
-    <template slot="creationTimestamp" slot-scope="{val}">
-      {{ val | moment('YYYY-MM-DD A hh:mm:ss') }}
-    </template>
+    <timestamp slot="startTime" slot-scope="scope" v-bind="scope"/>
+    <timestamp slot="creationTimestamp" slot-scope="scope" v-bind="scope"/>
 
-    <template slot="ownerReferences" slot-scope="{val}">
-      <router-link :to="`/resources/${val[0].kind.toLowerCase()}/${val[0].name}?cs=-&ns=${ns}`">
-        {{ val[0].name }} ({{ val[0].kind }})
-      </router-link>
-    </template>
+    <ownerReferences slot="ownerReferences" slot-scope="scope" v-bind="scope"/>
+
+    <affinity slot="affinity" slot-scope="scope" v-bind="scope"/>
 
     <template slot="imagePullSecrets" slot-scope="{val}">
       <div v-for="(s, i) in val" :key="i">
@@ -88,6 +82,7 @@
 import { mapState } from 'vuex'
 
 export default {
+  name: 'workloads-detail',
   computed: mapState(['ns'])
 }
 </script>

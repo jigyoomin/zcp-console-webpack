@@ -29,13 +29,20 @@
           <!-- customized cell by header.id -->
           <slot :name="k" v-if="!!$scopedSlots[k] || !!$slots[k]" v-bind="{key: k, val: v}">
           </slot>
+          <!-- Well-known Field -->
+          <v-tooltip v-else-if="k === 'creationTimestamp'" right>
+            <span slot="activator"> {{ v | moment('from', true) || '-' }} </span>
+            <span> {{ v | moment('YYYY-MM-DD A hh:mm:ss') || '-' }} </span>
+          </v-tooltip>
+          <labels v-else-if="k === 'labels'" v-bind="{key:k, val:v, labels:v}"/>
           <!-- Object Type -->
-          <v-tooltip v-else-if="_.isObject(v)" bottom>
+          <!-- <v-tooltip v-else-if="_.isObject(v)" bottom>
             <div slot="activator" class="text-truncate">{{ v }}</div>
             <pre>{{ stringify(v) }}</pre>
-          </v-tooltip>
+          </v-tooltip> -->
           <!-- toString -->
-          <div class="text-truncate" v-else>{{ v }}</div>
+          <truncate-text v-else-if="_.isObject(v)" :value="stringify(v)"/>
+          <truncate-text v-else :value="v"/>
         </v-flex>
       </v-layout>
 

@@ -5,7 +5,8 @@
 const path = require('path')
 const {URL} = require('url')
 
-const proxyTarget = 'https://console.cloudzcp.io'
+// const proxyTarget = 'https://console.cloudzcp.io'
+const proxyTarget = 'http://localhost:8181'
 const proxyDns = { 'console.cloudzcp.io': '169.56.77.198' }
 const proxyHeader = {}
 
