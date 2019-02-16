@@ -8,7 +8,7 @@
 
     <ownerReferences slot="ownerReferences" slot-scope="scope" v-bind="scope"/>
 
-    <affinity slot="affinity" slot-scope="scope" v-bind="scope"/>
+    <!-- <affinity slot="affinity" slot-scope="scope" v-bind="scope"/> -->
 
     <template slot="imagePullSecrets" slot-scope="{val}">
       <div v-for="(s, i) in val" :key="i">

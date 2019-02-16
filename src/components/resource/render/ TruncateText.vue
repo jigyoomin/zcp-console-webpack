@@ -38,5 +38,5 @@ export default {
 
 /* .pre-wrap { white-space: pre-wrap; } */
 /* https://aboooks.tistory.com/187 */
-.pre-wrap { white-space: pre-wrap; overflow-x: auto; border: 1px solid rgba(0,0,0,.12); }
+.pre-wrap { white-space: pre-wrap; overflow-x: auto; border: 1px solid rgba(0,0,0,.12); padding: 5px; }
 </style>

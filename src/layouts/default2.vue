@@ -36,8 +36,7 @@
 
           <!-- multiple menu item -->
           <v-list-group v-if="menu.sub"
-            :key="menu.title" :group="menu.url"
-            active-class="primary--text nav-active2">
+            :key="menu.title" :group="menu.url">
 
             <!-- activator -->
             <v-list-tile slot="activator" class="nav-item">
@@ -212,7 +211,7 @@ export default {
 /* .v-list__group__header--active .nav-item { caret-color: #ea0530 !important; color: #ea0530 !important; }
 .v-list__tile--active .v-list__tile__content { caret-color: #444444 !important; color: #444444 !important; } */
 
-.nav-active.title * { caret-color: #ea0530 !important; color: #ea0530 !important; }
+.v-list__group__header--active .nav-item { caret-color: #ea0530 !important; color: #ea0530 !important; }
 .nav-active.sub * { caret-color: #444444!important; color: #444444!important; }
 
 /* */
