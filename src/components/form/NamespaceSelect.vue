@@ -4,7 +4,8 @@
     :items="select[1].items"
     item-disabled="disabled"
     item-text="metadata.name" item-value="metadata.name"
-    v-model="ns" menu-props="auto">
+    v-model="ns" menu-props="auto"
+    :error="error">
   </v-select>
 </template>
 
@@ -17,14 +18,10 @@ import cookies from 'js-cookie'
 export default {
   name: 'ns-select',
   props: ['label'],
-  data () {
-    return {
-      pod: {}
-    }
-  },
   computed: {
     ...mapState(['select']),
-    ...mapFields(['ns'])
+    ...mapFields(['ns']),
+    error () { return this.select[1].error }
   },
   watch: {
     ns: function (_new) {

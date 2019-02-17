@@ -3,7 +3,7 @@
     <template slot="title">
       <v-layout>
         <kind-select/>
-        <v-btn icon flat color="grey"  @click="updateData()">
+        <v-btn icon flat color="grey"  @click="updateData()" class="btn-refresh">
           <v-icon>replay</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
@@ -29,18 +29,18 @@
 
       <!-- Ingress -->
       <template slot="url" slot-scope="{val}">
-        <a v-for="v in val" :key="v.url" target="_blink" :href="v.url">
-          {{ v.url}}
-        </a>
+        <div v-for="v in val" :key="v.url">
+          <a target="_blink" :href="v.url">{{v.url}}</a>
+        </div>
       </template>
       <template slot="service" slot-scope="{val}">
-        <span v-for="v in val" :key="v.service" v-text="v.service"></span>
+        <div v-for="v in val" :key="v.service" v-text="v.service"></div>
       </template>
       <template slot="address" slot-scope="{val}">
         <span v-text="val[0].address"></span>
       </template>
       <template slot="secret" slot-scope="{val}">
-        <span v-for="v in val" :key="v.secret" v-text="v.secret"></span>
+        <div v-for="(v, i) in val" :key="i" v-text="v.secret"></div>
       </template>
 
     </resource-table>
@@ -82,62 +82,53 @@ export default {
   methods: {
     ...mapMutations(['setKindItem']),
     updateData () {
-      if (!this.kind || !this.ns) {
-        return
-      }
+      const _ = this.$_
+      const valid = _.contains(_.keys(HEADERS), this.kind)
+      if (!valid || !this.kind || !this.ns) { return }
 
       const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
-      this.table.loading = true
-
-      this.$http
+      const call = this.$http
         .get(URL)
         .then((res) => {
           this.table.data = res.data.items
 
-          if (this.kind === 'ing') {
-            let _ = this.$_
-
-            let to = {
-              ip: 'status.loadBalancer.ingress.0.ip'.split('.'),
-              tls: 'spec.tls'.split('.'),
-              rules: 'spec.rules'.split('.')
-            }
-            // generate url
-            res.data.items.forEach(ing => {
-              let _ing = _(ing)
-              let ip = _ing.propertyOf()(to.ip) || '<unbound>'
-              let tls = _ing.propertyOf()(to.tls) || []
-              tls = _(tls).map(v => v && v.hosts).flatten()
-              let secret = _ing.propertyOf()(to.tls) || []
-              secret = _(secret).map(v => v && v.secretName)
-              let _routes = _ing.propertyOf()(to.rules)
-
-              ing._extract = _routes.map(({host, http}) => {
-                let protocol = _(tls).contains(host) ? 'https' : 'http'
-                return _(http.paths).map(({path, backend}) => {
-                  return {
-                    url: `${protocol}://${host || ip}${path || ''}`,
-                    service: `${backend.serviceName}:${backend.servicePort}`,
-                    address: ip,
-                    secret: secret
-                  }
-                })
-              }).flatten()
-              console.log(ip, tls, secret, ing._extract)
-            })
-          }
-
-          this.table.loading = false
+          this.kind === 'ing' && this.buildIngressData()
         })
+      this.$progress(call, this.table)
     },
-    sizeOf (bytes) {
-      // https://stackoverflow.com/a/28120564
-      // https://github.com/kubernetes/community/blob/master/contributors/design-proposals/scheduling/resources.md#resource-quantities
-      if (bytes === 0) { return '0.0 Bi' }
-      if (!bytes) { return '-' }
-      var e = Math.floor(Math.log(bytes) / Math.log(1024))
-      var s = (bytes / Math.pow(1024, e)).toFixed(1)
-      return `${s} ${' KMGTP'.charAt(e)}i`
+    buildIngressData () {
+      let _ = this.$_
+      let path = [
+        'status.loadBalancer.ingress.0.ip'.split('.'),
+        'spec.tls'.split('.'),
+        'spec.rules'.split('.')
+      ]
+
+      // generate url
+      this.table.data.forEach(spec => {
+        let [ip, tls, rules] = _.map(path, p => _.property(p)(spec))
+        let secret = {}
+        let protocol = {}
+
+        _.reduce(tls, (none, tls) => {
+          _.each(tls.hosts, host => {
+            secret[host] = tls.secretName
+            protocol[host] = 'https'
+          })
+        }, {})
+
+        ip = ip || '<unbound>'
+        spec._extract = _.map(rules, ({host, http}) => {
+          return _.map(http.paths, ({path, backend}) => {
+            return {
+              url: `${protocol[host] || 'http'}://${host || ip}${path || ''}`,
+              service: `${backend.serviceName}:${backend.servicePort}`,
+              address: ip,
+              secret: secret[host]
+            }
+          })
+        }).flatten()
+      })
     }
   },
   created () {
@@ -150,9 +141,11 @@ export default {
     this.$store.watch(() => this.kind, this.updateData)
   },
   mounted () {
-    if (this.table.data.length === 0) {
-      this.updateData()
-    }
+    this.updateData()
   }
 }
 </script>
+
+<style scoped>
+.btn-refresh { top: 12px; }
+</style>

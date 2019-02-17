@@ -15,6 +15,7 @@
     </v-card-title>
 
     <v-divider></v-divider>
+    <v-progress-linear color="blue" indeterminate v-if="loading"></v-progress-linear>
 
     <v-card-text v-for="(val, key) in displayYaml" :key="key" class="prop">
       <v-flex class="font-weight-bold text-capitalize"> {{ key }} </v-flex>
@@ -49,6 +50,12 @@
       <v-divider></v-divider>
     </v-card-text>
 
+    <v-card-text>
+      <v-alert :value="error" color="error">
+        Fail to load data
+      </v-alert>
+    </v-card-text>
+
   </v-card>
 </template>
 
@@ -59,7 +66,9 @@ import stringify from 'json-stringify-pretty-compact'
 export default {
   data () {
     return {
-      yaml: {}
+      yaml: {},
+      loading: false,
+      error: false
     }
   },
   computed: {
@@ -77,17 +86,18 @@ export default {
     updateData () {
       const cs = '-'
       const url = `/api/resource/${this.kind}/${this.$route.params.name}?ns=${this.ns}&cs=${cs}&type=json`
-      this.$http
+
+      const call = this.$http
         .get(url)
         .then((res) => {
           // this.yaml = this.$filters.cleanup(res.data)
-          if (res.data.code) {
-            // TODO: ERROR
-            return
+          if (res.data && this.$_.has(res.data, 'code') && res.data.code !== 200) {
+            throw res.data.msg
           }
           this.cleanup(res.data)
           this.yaml = res.data
         })
+      this.$progress(call, this)
     },
     cleanup (v, k, ctx) {
       const _ = this._

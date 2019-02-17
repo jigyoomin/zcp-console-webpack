@@ -69,6 +69,9 @@
 
         </template>
 
+        <v-alert :value="menus.error" color="error">
+          Fail to load menus
+        </v-alert>
       </v-list>
 
       <!-- menu resizer button -->

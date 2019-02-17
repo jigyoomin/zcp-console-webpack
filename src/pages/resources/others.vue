@@ -3,7 +3,7 @@
     <template slot="title">
       <v-layout>
         <kind-select/>
-        <v-btn icon flat color="grey" @click="updateData()">
+        <v-btn icon flat color="grey" @click="updateData()" class="btn-refresh">
           <v-icon>replay</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
@@ -78,7 +78,7 @@ export default {
         return
       }
 
-      const URL = `/api/${this.kind}/list?type=yaml&cs=${this.cs}&ns=${this.ns}`
+      const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
       this.table.loading = true
 
       this.$http
@@ -114,3 +114,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btn-refresh { top: 12px; }
+</style>

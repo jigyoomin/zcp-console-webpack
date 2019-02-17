@@ -43,21 +43,21 @@
 
             <!-- for actions -->
             <slot v-else-if="h.id === 'action'" v-bind="scope">
-              <v-tooltip right :open-delay="0.3" :close-delay="0.3">
+              <v-tooltip bottom :open-delay="0.3" :close-delay="0.3">
                 <v-btn slot="activator" color="primary" flat icon @click="showDialog('editor', scope.item)">
                   <v-icon>create</v-icon>
                 </v-btn>
                 <span>Edit Yaml</span>
               </v-tooltip>
 
-              <v-tooltip right :open-delay="0.3" :close-delay="0.3" v-if="kind === 'pod'">
+              <v-tooltip bottom :open-delay="0.3" :close-delay="0.3" v-if="kind === 'pod'">
                 <v-btn slot="activator" color="primary" flat icon @click="showDialog('ssh', scope.item)">
                   <v-icon>web_asset</v-icon>
                 </v-btn>
                 <span>Open Shell</span>
               </v-tooltip>
 
-              <v-tooltip right :open-delay="0.3" :close-delay="0.3" v-if="kind === 'pod'">
+              <v-tooltip bottom :open-delay="0.3" :close-delay="0.3" v-if="kind === 'pod'">
                 <v-btn slot="activator" color="primary" flat icon @click="showDialog('log', scope.item)">
                   <v-icon>notes</v-icon>
                 </v-btn>
@@ -78,6 +78,11 @@
       </template>
     </template>
 
+    <template slot="no-data">
+      <v-alert :value="error" color="error">
+        Fail to load data
+      </v-alert>
+    </template>
   </v-data-table>
 
   <!-- dialogs for actions -->
@@ -152,7 +157,7 @@ const HEADER = _.mapObject({
 }, expand)
 
 export default {
-  props: 'data, headers, loading, keyword'.split(/, ?/),
+  props: 'data, headers, loading, error, keyword'.split(/, ?/),
   data () {
     return {
       dialog: {

@@ -25,7 +25,7 @@ export default {
     ...mapMutations(['setFromQuery'])
   },
   created () {
-    this.setFromQuery(this.$route.query)
+    // this.setFromQuery(this.$route.query)
   }
 }
 </script>

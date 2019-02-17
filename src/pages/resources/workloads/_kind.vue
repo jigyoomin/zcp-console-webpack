@@ -22,9 +22,10 @@
       <!-- STS -->
       <labels slot="selector" slot-scope="{val}" v-bind:labels="val.matchLabels"/>
       <template slot="volume-temp" slot-scope="{val}">
-        <span v-for="vol in val" :key="vol.metadata.name">
-          {{ `${vol.metadata.name} - ${sizeOf(vol.spec.resources.requests.storage.number)} (${vol.status.phase})` }}
-        </span>
+        <div v-for="vol in val" :key="vol.metadata.name">
+          <span>{{ vol.metadata.name }}</span>
+          <span> - {{ vol.spec.resources.requests.storage.number | sizeOf }} ({{vol.status.phase}})</span>
+        </div>
       </template>
 
       <!-- ReplicaSet-->
@@ -112,28 +113,17 @@ export default {
       this.table.keyword = this.$route.query.keyword || ''
     },
     updateData () {
-      if (!this.kind || !this.ns) {
-        return
-      }
+      const _ = this.$_
+      const valid = _.contains(_.keys(HEADERS), this.kind)
+      if (!valid || !this.kind || !this.ns) { return }
 
       const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
-      this.table.loading = true
-
-      this.$http
+      const call = this.$http
         .get(URL)
         .then((res) => {
           this.table.data = res.data.items
-          this.table.loading = false
         })
-    },
-    sizeOf (bytes) {
-      // https://stackoverflow.com/a/28120564
-      // https://github.com/kubernetes/community/blob/master/contributors/design-proposals/scheduling/resources.md#resource-quantities
-      if (bytes === 0) { return '0.0 Bi' }
-      if (!bytes) { return '-' }
-      var e = Math.floor(Math.log(bytes) / Math.log(1024))
-      var s = (bytes / Math.pow(1024, e)).toFixed(1)
-      return `${s} ${' KMGTP'.charAt(e)}i`
+      this.$progress(call, this.table)
     },
     moveToChildJob (name) {
       location.hash = `#/resources/workloads/job?ns=${this.ns}&keyword=${name}`
@@ -150,13 +140,11 @@ export default {
     this.$store.watch(() => this.kind, this.updateData)
   },
   mounted () {
-    if (this.table.data.length === 0) {
-      this.updateData()
-    }
+    this.updateData()
   }
 }
 </script>
 
-<style>
+<style scoped>
 .btn-refresh { top: 12px; }
 </style>

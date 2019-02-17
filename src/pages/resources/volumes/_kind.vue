@@ -3,7 +3,7 @@
     <template slot="title">
       <v-layout>
         <kind-select/>
-        <v-btn icon flat color="grey" @click="updateData()">
+        <v-btn icon flat color="grey" @click="updateData()" class="btn-refresh">
           <v-icon>replay</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
@@ -23,7 +23,7 @@
 
       <!-- PVC -->
       <template slot="capacity" slot-scope="{val}">
-        {{ sizeOf(val) }}
+        {{ val | sizeOf }}
       </template>
       <template slot="access-modes" slot-scope="{val}">
         {{ val.join(', ') }}
@@ -64,28 +64,18 @@ export default {
   methods: {
     ...mapMutations(['setKindItem']),
     updateData () {
-      if (!this.kind || !this.ns) {
-        return
-      }
+      const _ = this.$_
+      const valid = _.contains(_.keys(HEADERS), this.kind)
+      if (!valid || !this.kind || !this.ns) { return }
 
       const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
-      this.table.loading = true
-
-      this.$http
+      const call = this.$http
         .get(URL)
         .then((res) => {
           this.table.data = res.data.items
           this.table.loading = false
         })
-    },
-    sizeOf (bytes) {
-      // https://stackoverflow.com/a/28120564
-      // https://github.com/kubernetes/community/blob/master/contributors/design-proposals/scheduling/resources.md#resource-quantities
-      if (bytes === 0) { return '0.0 Bi' }
-      if (!bytes) { return '-' }
-      var e = Math.floor(Math.log(bytes) / Math.log(1024))
-      var s = (bytes / Math.pow(1024, e)).toFixed(1)
-      return `${s} ${' KMGTP'.charAt(e)}i`
+      this.$progress(call, this.table)
     }
   },
   created () {
@@ -98,9 +88,11 @@ export default {
     this.$store.watch(() => this.kind, this.updateData)
   },
   mounted () {
-    if (this.table.data.length === 0) {
-      this.updateData()
-    }
+    this.updateData()
   }
 }
 </script>
+
+<style scoped>
+.btn-refresh { top: 12px; }
+</style>

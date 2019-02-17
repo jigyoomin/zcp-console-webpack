@@ -43,13 +43,15 @@ const mutations = {
   changeNamespace (state, namespace) {
     state.select[1].selected = namespace
   },
-  setNamespaceItem (state, items) {
-    state.select[1].items = items
-    if (!state.ns) { state.ns = items[0].metadata.name }
+  setNamespaceItem (state, select) {
+    state.select[1].items = select.items || []
+    state.select[1].loading = select.loading
+    state.select[1].error = select.error
+    if (!state.ns) { state.ns = state.select[1].items[0] ? state.select[1].items[0].metadata.name : '' }
   },
   setDummyNamespaceItem (state) {
-    let items = state.select[1].items
-    let profile = state.profile
+    let items = state.select[1].items || []
+    let profile = state.profile || {}
 
     if (items.length === 0 || profile.clusterRole !== 'cluster-admin') {
       return
@@ -88,11 +90,16 @@ const mutations = {
 
 const actions = {
   getNamespace (store) {
+    store.commit('setNamespaceItem', {loading: true})
+
     axios
       .get(`/api/resource/namespaces?type=yaml&cs=-&ns=-`)
       .then((res) => {
-        store.commit('setNamespaceItem', res.data.items)
+        store.commit('setNamespaceItem', {items: res.data.items, loading: false})
         store.commit('setDummyNamespaceItem')
+      })
+      .catch(() => {
+        store.commit('setNamespaceItem', {loading: false, error: true})
       })
   },
   getProfile (store) {
@@ -118,6 +125,9 @@ const actions = {
           item.sub && item.sub.forEach(mapper)
         })
         store.commit('setMenus', {loading: false, items: res.data})
+      })
+      .catch(() => {
+        store.commit('setMenus', {loading: false, error: true})
       })
   },
   getConfig (store) {

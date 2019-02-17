@@ -3,7 +3,7 @@
     <template slot="title">
       <v-layout>
         <kind-select/>
-        <v-btn icon flat color="grey" @click="updateData()">
+        <v-btn icon flat color="grey" @click="updateData()" class="btn-refresh">
           <v-icon>replay</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
@@ -67,19 +67,18 @@ export default {
   methods: {
     ...mapMutations(['setKindItem']),
     updateData () {
-      if (!this.kind || !this.ns) {
-        return
-      }
+      const _ = this.$_
+      const valid = _.contains(_.keys(HEADERS), this.kind)
+      if (!valid || !this.kind || !this.ns) { return }
 
       const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
-      this.table.loading = true
-
-      this.$http
+      const call = this.$http
         .get(URL)
         .then((res) => {
           this.table.data = res.data.items
           this.table.loading = false
         })
+      this.$progress(call, this.table)
     },
     sizeOf (bytes) {
       // https://stackoverflow.com/a/28120564
@@ -107,3 +106,7 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.btn-refresh { top: 12px; }
+</style>
