@@ -137,8 +137,6 @@ export default {
           var term = this.terminal.term
           var len = this.terminal.cols || 80
 
-          console.log(res.data)
-
           var rows = res.data.split('\n')
           for (var i = 0; i < rows.length; i++) {
             term.write(rows[i])
