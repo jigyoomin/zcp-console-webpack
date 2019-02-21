@@ -21,11 +21,10 @@ function install (Vue, options) {
   // }
 
   // 2. 전역 에셋 추가
-  // Vue.directive('my-directive', {
-  //   bind (el, binding, vnode, oldVnode) {
-  //   // 필요한 로직 ...
-  //   }
-  // })
+  Vue.directive('title', {
+    inserted: (el, binding) => { document.title = binding.value },
+    update: (el, binding) => { document.title = binding.value }
+  })
 
   // 3. 컴포넌트 옵션 주입
   // Vue.mixin({

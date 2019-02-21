@@ -32,7 +32,8 @@ const state = {
     application: {
       product: 'ZCP',
       label: ''
-    }
+    },
+    title: ''
   }
 }
 
@@ -84,6 +85,8 @@ const mutations = {
   },
   mergeConfig (state, _new) {
     Object.assign(state.config, _new)
+    let {label} = state.config.application || {}
+    state.config.title = 'CloudZ CP ' + (label ? `(${label})` : '')
   },
   updateField
 }

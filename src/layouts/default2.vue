@@ -144,7 +144,7 @@
           </v-flex>
 
           <v-flex xs12>
-            <nuxt/>
+            <nuxt v-title="title"/>
           </v-flex>
 
         </v-layout>
@@ -173,7 +173,10 @@ export default {
     this.getProfile()
     this.getConfig()
   },
-  computed: mapState(['menus', 'toolbar', 'profile', 'config']),
+  computed: {
+    ...mapState(['menus', 'toolbar', 'profile', 'config']),
+    title () { return this.config.title }
+  },
   methods: mapActions(['getProfile', 'getConfig'])
 }
 </script>
