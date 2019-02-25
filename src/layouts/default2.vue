@@ -139,9 +139,9 @@
           <v-flex xs12 class="select-group">
             <v-layout align-center>
                 <span class="subheading font-weight-medium grey--text text--darken-2">Namespace: &nbsp;&nbsp;</span>
-                <flex xs2>
+                <v-flex xs2>
                   <namespace-select :label="false"/>
-                </flex>
+                </v-flex>
 
                 <v-spacer></v-spacer>
 

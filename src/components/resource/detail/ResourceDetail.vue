@@ -23,7 +23,7 @@
         <v-layout row>
           <v-flex xs2 class="font-weight-bold text-capitalize"> {{ key }} </v-flex>
 
-          <v-flex xs10 v-if="key.endsWith('Timestamp')">
+          <v-flex xs10 v-if="_.isString(key) && key.endsWith('Timestamp')">
             <timestamp v-bind="{val}"/>
           </v-flex>
           <v-flex xs10 v-else> {{ val }} </v-flex>
@@ -42,7 +42,7 @@
             </slot>
 
             <!-- Well-known Field -->
-            <timestamp v-else-if="k.endsWith('Timestamp')" v-bind="{val: v, from: true}"/>
+            <timestamp v-else-if="_.isString(k) && k.endsWith('Timestamp')" v-bind="{val: v, from: true}"/>
             <labels v-else-if="k === 'labels'" v-bind="{key:k, val:v, labels:v}"/>
 
             <!-- Object Type -->
@@ -89,6 +89,11 @@ export default {
       return this.$_.pick(this.yaml, (v, k) => ['apiVersion', 'kind'].indexOf(k) === -1)
     }
   },
+  watch: {
+    ns (_new) {
+      this.updateData()
+    }
+  },
   methods: {
     updateData () {
       const cs = '-'
@@ -97,10 +102,17 @@ export default {
       const call = this.$http
         .get(url)
         .then((res) => {
-          // this.yaml = this.$filters.cleanup(res.data)
-          if (res.data && this.$_.has(res.data, 'code') && res.data.code !== 200) {
-            throw res.data.msg
+          const {code} = res.data || {}
+          if (code) {
+            if (code % 1000 === 404) {
+              const route = this.$route
+              location.hash = `/resources/${route.params.group}/${route.params.kind}`
+              return
+            } if (code !== 200) {
+              throw res.data.msg
+            }
           }
+
           this.cleanup(res.data)
           this.yaml = res.data
         })
