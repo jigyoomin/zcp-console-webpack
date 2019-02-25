@@ -1,9 +1,13 @@
 <template>
   <!-- Resource Spec (YAML) -->
-  <v-dialog v-model="show" max-width="1000">
+  <v-dialog v-model="show" :fullscreen="full" max-width="1000">
     <v-card>
       <v-card-title class="headline grey lighten-2" primary-title>
         {{ _.property(['metadata', 'name'])(item) }}
+        <v-spacer></v-spacer>
+        <v-btn color="primary" flat icon @click="full = !full">
+          <v-icon>{{ !full ? 'fullscreen' : 'fullscreen_exit' }}</v-icon>
+        </v-btn>
       </v-card-title>
 
       <v-card-text>
@@ -44,6 +48,7 @@ export default {
       code: PLACE_HOLDER,
       code_error: [],
       loading: false,
+      full: false,
       snack: {show: false, color: 'info', text: '', timeout: 1000},
       options: {
         // codemirror options
@@ -148,5 +153,5 @@ export default {
 
 <style scoped>
 .vue-codemirror { text-align: left!important; }
-.CodeMirror { height: 500px; }
+>>> .CodeMirror { height: 500px; }
 </style>
