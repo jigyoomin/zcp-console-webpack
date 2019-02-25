@@ -36,7 +36,7 @@
 
             <!-- for name link -->
             <slot v-else-if="h.id === 'name'" v-bind="scope">
-              <router-link :to="`/resource/${kind}/${scope.item.metadata.name}?cs=-&ns=${ns}`">
+              <router-link :to="link(scope)">
                 {{ _.property(h.value.split('.'))(scope.item) || '-' }}
               </router-link>
             </slot>
@@ -183,6 +183,11 @@ export default {
     showDialog (name, item) {
       this.dialog[name].open = true
       this.dialog[name].item = item
+    },
+    link (scope) {
+      const {group} = this.$route.params
+      const {metadata: {name}} = scope.item
+      return `/resources/${group}/${this.kind}/${name}?cs=-&ns=${this.ns}`
     }
   }
 }

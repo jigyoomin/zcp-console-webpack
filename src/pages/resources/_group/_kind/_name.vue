@@ -15,7 +15,6 @@ export default {
         comp = 'workloads-detail'
       }
 
-      console.log(comp)
       return comp
     }
   }
