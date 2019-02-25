@@ -136,10 +136,19 @@
       <v-container fluid>
         <v-layout row wrap>
 
-          <v-flex shrink class="select-group">
-            <v-layout row align-center>
-              <span class="subheading font-weight-medium grey--text text--darken-2">Namespace: &nbsp;&nbsp;</span>
-              <namespace-select :label="false"/>
+          <v-flex xs12 class="select-group">
+            <v-layout align-center>
+                <span class="subheading font-weight-medium grey--text text--darken-2">Namespace: &nbsp;&nbsp;</span>
+                <flex xs2>
+                  <namespace-select :label="false"/>
+                </flex>
+
+                <v-spacer></v-spacer>
+
+                <v-btn flat light class="nav-back" v-if="$route.params.name" @click="$router.go(-1)">
+                  <v-icon>keyboard_arrow_left</v-icon>
+                  <span>목록으로 돌아가기</span>
+                </v-btn>
             </v-layout>
           </v-flex>
 
@@ -213,6 +222,10 @@ export default {
 .nav-item-title { font-size: 1.25em; font-weight: 500; padding-left: 10px; }
 .nav-item-title.sub { font-size: 1.1em; font-weight: 500; padding-left: 15px; }
 .nav-item-launch.sub { padding-right: 4px; }
+
+.nav-back i { color: #a8a9ac !important; }
+.nav-back span { border-bottom: 1px solid #a8a9ac; color: #666666 !important; }
+.nav-back::before { opacity: 0; }
 
 /* .v-list__group__header--active .nav-item { caret-color: #ea0530 !important; color: #ea0530 !important; }
 .v-list__tile--active .v-list__tile__content { caret-color: #444444 !important; color: #444444 !important; } */
