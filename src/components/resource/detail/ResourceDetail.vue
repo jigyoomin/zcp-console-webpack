@@ -18,34 +18,41 @@
     <v-progress-linear color="blue" indeterminate v-if="loading"></v-progress-linear>
 
     <v-card-text v-for="(val, key) in displayYaml" :key="key" class="prop">
-      <v-flex class="font-weight-bold text-capitalize"> {{ key }} </v-flex>
-
       <!-- String Type -->
-      <v-flex v-if="_.isString(val)"> {{ val }} </v-flex>
+      <template v-if="!_.isObject(val)">
+        <v-layout row>
+          <v-flex xs2 class="font-weight-bold text-capitalize"> {{ key }} </v-flex>
+
+          <v-flex xs10 v-if="key.endsWith('Timestamp')">
+            <timestamp v-bind="{val}"/>
+          </v-flex>
+          <v-flex xs10 v-else> {{ val }} </v-flex>
+        </v-layout>
+      </template>
 
       <!-- Object Type -->
-      <v-layout v-else v-for="(v, k) in val" :key="k" row>
-        <v-flex class="xs2 grey--text">{{ k }}</v-flex>
-        <v-flex class="xs10 font-weight-regular">
-          <!-- customized cell by header.id -->
-          <slot :name="k" v-if="!!$scopedSlots[k] || !!$slots[k]" v-bind="{key: k, val: v}">
-          </slot>
-          <!-- Well-known Field -->
-          <v-tooltip v-else-if="k === 'creationTimestamp'" right>
-            <span slot="activator"> {{ v | moment('from', true) || '-' }} </span>
-            <span> {{ v | moment('YYYY-MM-DD A hh:mm:ss') || '-' }} </span>
-          </v-tooltip>
-          <labels v-else-if="k === 'labels'" v-bind="{key:k, val:v, labels:v}"/>
-          <!-- Object Type -->
-          <!-- <v-tooltip v-else-if="_.isObject(v)" bottom>
-            <div slot="activator" class="text-truncate">{{ v }}</div>
-            <pre>{{ stringify(v) }}</pre>
-          </v-tooltip> -->
-          <!-- toString -->
-          <truncate-text v-else-if="_.isObject(v)" :value="stringify(v)"/>
-          <truncate-text v-else :value="v"/>
-        </v-flex>
-      </v-layout>
+      <template v-else>
+        <v-flex xs2 class="font-weight-bold text-capitalize"> {{ key }} </v-flex>
+
+        <v-layout v-for="(v, k) in val" :key="k" row>
+          <v-flex class="xs2 grey--text">{{ k }}</v-flex>
+          <v-flex class="xs10 font-weight-regular">
+            <!-- customized cell by header.id -->
+            <slot :name="k" v-if="!!$scopedSlots[k] || !!$slots[k]" v-bind="{key: k, val: v}">
+            </slot>
+
+            <!-- Well-known Field -->
+            <timestamp v-else-if="k.endsWith('Timestamp')" v-bind="{val: v, from: true}"/>
+            <labels v-else-if="k === 'labels'" v-bind="{key:k, val:v, labels:v}"/>
+
+            <!-- Object Type -->
+            <truncate-text v-else-if="_.isObject(v)" :value="stringify(v)"/>
+
+            <!-- toString -->
+            <truncate-text v-else :value="v"/>
+          </v-flex>
+        </v-layout>
+      </template>
 
       <v-divider></v-divider>
     </v-card-text>
