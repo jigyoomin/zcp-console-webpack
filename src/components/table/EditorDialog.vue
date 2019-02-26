@@ -24,6 +24,7 @@
       <v-card-actions>
         <v-progress-linear v-if="loading" color="blue" indeterminate></v-progress-linear>
         <v-spacer></v-spacer>
+        <!-- <v-select :items="format" label="Format" v-model="encoding" v-if="kind === 'secret'"></v-select> -->
         <v-btn color="blue darken-1" flat @click="replaceYaml()">Save</v-btn>
         <v-btn color="blue darken-1" flat @click="show = false">Close</v-btn>
       </v-card-actions>
@@ -57,7 +58,9 @@ export default {
         theme: 'base16-dark',
         lineNumbers: true,
         line: true
-      }
+      },
+      format: null,
+      encoding: null
     }
   },
   computed: {
@@ -70,26 +73,33 @@ export default {
       set (val) { this.$emit('input', val) }
     }
   },
+  // watch: {
+  //   encoding (_to, _from) {
+  //     this.formatter(undefined, _from, _to)
+  //   }
+  // },
   methods: {
     loadYaml () {
       if (!this.item) {
         return
       }
 
-      var cs = '-'
+      // clean up
+      let cs = '-'
       this.loading = true
       this.code = PLACE_HOLDER
-      this.$http
+      this.code_error = []
+
+      let call = this.$http
         .get(`/api/resource/${this.kind}/${this.item.metadata.name}?type=yaml&cs=${cs}&ns=${this.ns}`)
         .then((res) => {
           if (!res.data) {
             console.log('ERR : There is no data. Retry to request.')
-            return this.loadYaml()
+            // return this.loadYaml()
           }
-
           this.setCodeAsYaml(res.data)
-          this.loading = false
         })
+      this.$progress(call, this)
     },
     replaceYaml () {
       var cs = '-'
@@ -99,8 +109,17 @@ export default {
       try {
         body = Yaml.load(this.code)
       } catch (e) {
-        console.log(e)
-        this.setCodeWithError([e.name, e.message].join('\n'))
+        let msg = [e.name, e.message].join('\n')
+
+        if (this.code_error.length === 0) {
+          let {line} = e.mark
+          let lineCount = this.$_.countBy([...msg], c => c === '\n')['true']
+
+          msg = msg.replace(`line ${line + 1},`, `line ${line + 1 + lineCount + 1},`)
+          console.log(lineCount, msg, e)
+        }
+
+        this.setCodeWithError(msg)
         return
       }
 
@@ -109,11 +128,12 @@ export default {
         .put(url, body)
         .then((res) => {
           if (res.data && !!res.data.code) {
-            this.setCodeWithError('++ ' + res.data.msg)
+            this.setCodeWithError(res.data.msg)
           } else {
             this.snack.color = 'info'
             this.snack.text = 'Saved'
             this.snack.show = true
+            this.code_error = []
 
             this.setCodeAsYaml(res.data)
           }
@@ -132,20 +152,41 @@ export default {
           delete ctx[k]
         }
       }
-
       cleanup(obj)
+
+      this.$_.each(obj.data, (v, k, l) => {
+        // l[k] = String.fromCharCode.apply({}, v)
+        l[k] = Buffer.from(v).toString('base64')
+      })
+      // this.formatter(obj)
       this.code = Yaml.dump(obj)
     },
     setCodeWithError (error) {
       const len = this.code_error.join('\n').length
       this.code_error = this._.map(error.split('\n'), v => '# ' + v)
       this.code_error.push('')
-      // this.options.firstLineNumber = 1 - error.length
       this.code = this.code_error.join('\n') + this.code.substr(len)
 
       this.snack.color = 'error'
       this.snack.text = 'Error'
       this.snack.show = true
+    },
+    formatter (obj, from, to) {
+      obj = obj || Yaml.load(this.code) || {kind: ''}
+      if (obj.kind.toLowerCase() !== 'secret') { return }
+
+      this.format = ['base64', 'ascii']
+      this.encoding = this.encoding || this.format[0]
+
+      this.$_.each(obj.data, (v, k, l) => {
+        if (this.$_.isArray(v)) {
+          l[k] = String.fromCharCode.apply({}, v)
+          this.encoding = 'base64'
+        } else {
+          l[k] = Buffer.from(v, from).toString(to)
+        }
+      })
+      this.code = Yaml.dump(obj)
     }
   }
 }

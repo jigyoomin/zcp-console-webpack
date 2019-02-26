@@ -151,7 +151,7 @@ const HEADER = _.mapObject({
   'Pvc-Status': 'text=Status | value=status.phase',
   'Volume': 'value=spec.volumeName',
   // 'Capacity': 'value=spec.resources.requests.storage.number',
-  'Capacity': 'value=status.capacity.storage.number',
+  'Capacity': 'value=status.capacity.storage',
   'Access-Modes': 'text=Access Modes | value=spec.accessModes',
   'Storage-Class': 'text=Storage Class | value=spec.storageClassName'
 }, expand)

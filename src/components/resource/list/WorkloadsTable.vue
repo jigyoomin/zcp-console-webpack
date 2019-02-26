@@ -24,7 +24,7 @@
       <template slot="volume-temp" slot-scope="{val}">
         <div v-for="vol in val" :key="vol.metadata.name">
           <span>{{ vol.metadata.name }}</span>
-          <span> - {{ vol.spec.resources.requests.storage.number | sizeOf }} ({{vol.status.phase}})</span>
+          <span> - {{ vol.spec.resources.requests.storage }} ({{vol.status.phase}})</span>
         </div>
       </template>
 

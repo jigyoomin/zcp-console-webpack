@@ -23,7 +23,7 @@
 
       <!-- PVC -->
       <template slot="capacity" slot-scope="{val}">
-        {{ val | sizeOf }}
+        {{ val }}
       </template>
       <template slot="access-modes" slot-scope="{val}">
         {{ val.join(', ') }}
