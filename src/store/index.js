@@ -93,6 +93,7 @@ const mutations = {
 
 const actions = {
   getNamespace (store) {
+    /*
     store.commit('setNamespaceItem', {loading: true})
 
     axios
@@ -104,12 +105,19 @@ const actions = {
       .catch(() => {
         store.commit('setNamespaceItem', {loading: false, error: true})
       })
+    */
   },
   getProfile (store) {
     axios
       .get('/api/profile')
       .then((res) => {
+        let items = res.data.namespaces || []
+        items = items.map(ns => {
+          return {metadata: {name: ns}}
+        })
+
         store.commit('setProfile', res.data)
+        store.commit('setNamespaceItem', {items})
         store.commit('setDummyNamespaceItem')
       })
   },
