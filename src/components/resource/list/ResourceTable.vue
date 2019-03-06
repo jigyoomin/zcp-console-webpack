@@ -5,7 +5,10 @@
       :headers="header"
       :items="data" item-key="id"
       :loading="loading"
-      :search="keyword">
+      :search="search"
+      :pagination.sync="pagination"
+      :total-items="totalItems"
+      @update:pagination="updatePagination">
     <v-progress-linear slot="progress" color="blue" indeterminate></v-progress-linear>
 
     <v-alert slot="no-results" :value="true" color="error" icon="warning">
@@ -157,13 +160,17 @@ const HEADER = _.mapObject({
 }, expand)
 
 export default {
-  props: 'data, headers, loading, error, keyword'.split(/, ?/),
+  props: 'data, headers, loading, error, keyword, onserver, totalItems'.split(/, ?/),
   data () {
     return {
       dialog: {
         editor: { open: false, item: {} },
         ssh: { open: false, item: {} },
         log: { open: false, item: {} }
+      },
+      pagination: {
+        page: 1,
+        rowsPerPage: 5
       }
     }
   },
@@ -177,6 +184,9 @@ export default {
         }
       })
       return header
+    },
+    search () {
+      return !this.onserver ? this.keyword : null
     }
   },
   methods: {
@@ -188,7 +198,18 @@ export default {
       const {group} = this.$route.params
       const {metadata: {name}} = scope.item
       return `/resources/${group}/${this.kind}/${name}?cs=-&ns=${this.ns}`
+    },
+    updatePagination (payload) {
+      this.$root.$emit('update:pagination', payload)
     }
+  },
+  created () {
+    this.$watch('keyword', () => {
+      this.onserver && this.updatePagination({...this.pagination, force: true})
+    })
+    this.$root.$on('pageable', (pageable) => {
+      this.$emit('pageable', pageable)
+    })
   }
 }
 </script>

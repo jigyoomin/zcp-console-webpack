@@ -3,17 +3,17 @@
     <template slot="title">
       <v-layout>
         <kind-select/>
-        <v-btn icon flat color="grey" @click="updateData()" class="btn-refresh">
+        <v-btn icon flat color="grey" @click="updateData" class="btn-refresh">
           <v-icon>replay</v-icon>
         </v-btn>
         <v-spacer></v-spacer>
-        <v-text-field v-model="table.keyword" @keyup.esc="table.keyword = undefined"
+        <v-text-field v-model="$table.keyword" @keyup.esc="$table.keyword = undefined"
           hide-details clearable
           append-icon="search" label="Search"></v-text-field>
       </v-layout>
     </template>
 
-    <resource-table v-bind="table">
+    <resource-table v-bind="$table" @pageable="updateData">
       <template slot="age" slot-scope="{val}">
         {{ val | moment('from', true) || '-' }}
       </template>
@@ -25,6 +25,7 @@
 
 <script>
 import { mapState, mapMutations } from 'vuex'
+import Pageable, { asPageable } from '@/mixins/pageable'
 
 const KIND_ITEMS = [
   // ** cluster
@@ -61,16 +62,19 @@ export default {
     return {
       cs: '',
       table: {
-        keyword: '',
+        keyword: null,
         loading: false,
         data: [],
-        headers: HEADERS
+        headers: HEADERS,
+        totalItems: null
       }
     }
   },
   computed: {
-    ...mapState(['select', 'ns', 'kind'])
+    ...mapState(['select', 'ns', 'kind']),
+    ...asPageable({ target: 'table', $active () { return this.kind === 'ev' } })
   },
+  mixins: [Pageable],
   methods: {
     ...mapMutations(['setKindItem']),
     updateData () {
@@ -78,24 +82,14 @@ export default {
         return
       }
 
-      const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}`
-      this.table.loading = true
-
-      this.$http
+      const URL = `/api/resource/${this.kind}?type=yaml&cs=${this.cs}&ns=${this.ns}&keyword=${this.$table.keyword}&${this.$pageable.query}`
+      const call = this.$http
         .get(URL)
         .then((res) => {
-          this.table.data = res.data.items
-          this.table.loading = false
+          this.table.data = res.data.items || []
+          this.table.totalItems = res.data.total
         })
-    },
-    sizeOf (bytes) {
-      // https://stackoverflow.com/a/28120564
-      // https://github.com/kubernetes/community/blob/master/contributors/design-proposals/scheduling/resources.md#resource-quantities
-      if (bytes === 0) { return '0.0 Bi' }
-      if (!bytes) { return '-' }
-      var e = Math.floor(Math.log(bytes) / Math.log(1024))
-      var s = (bytes / Math.pow(1024, e)).toFixed(1)
-      return `${s} ${' KMGTP'.charAt(e)}i`
+      this.$progress(call, this.table)
     }
   },
   created () {
