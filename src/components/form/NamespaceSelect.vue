@@ -1,6 +1,7 @@
 <template>
   <v-select
-    :label="_.isUndefined(label) || label ? select[1].label : ''"
+    :label="_.isUndefined(noLabel) ? select[1].label : ''"
+    :class="allClass"
     :items="select[1].items"
     item-disabled="disabled"
     item-text="metadata.name" item-value="metadata.name"
@@ -17,11 +18,16 @@ import cookies from 'js-cookie'
 
 export default {
   name: 'ns-select',
-  props: ['label'],
+  props: ['no-label', 'flat'],
   computed: {
     ...mapState(['select']),
     ...mapFields(['ns']),
-    error () { return this.select[1].error }
+    error () { return this.select[1].error },
+    allClass () {
+      const _ = this.$_
+      let ret = ['flat']
+      return _.map(ret, k => _.isUndefined(k) ? '' : k)
+    }
   },
   watch: {
     ns: function (_new) {
@@ -56,3 +62,7 @@ export default {
   // fetch: function(){}
 }
 </script>
+
+<style>
+.flat .v-input__slot:before { display: none; }
+</style>
