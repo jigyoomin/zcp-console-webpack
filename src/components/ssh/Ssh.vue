@@ -112,8 +112,9 @@ export default {
       this.ws && this.ws.close()
     },
     connect () {
-      var term = this.terminal.term
+      if (this.ws) return console.log('ws is aleady connected.')
 
+      var term = this.terminal.term
       // https://github.com/xtermjs/xterm.js/issues/943#issuecomment-327367759
       term.reset()
 

@@ -93,7 +93,10 @@ export default {
       }
     },
     disconnect () {
-      this.ws && this.ws.close()
+      if (this.ws) {
+        console.log('call ws close')
+        this.ws.close()
+      }
     },
     logs () {
       var term = this.terminal.term
