@@ -1,0 +1,6 @@
+# https://developer.github.com/v3/repos/contents/#get-archive-link
+# curl -L https://api.github.com/repos/octokit/octokit.rb/tarball
+
+# https://github.com/jossef/material-design-icons-iconfont/tree/master/dist
+curl -L https://api.github.com/repos/jossef/material-design-icons-iconfont/tarball \
+  | tar zxvf - --strip-components=2 */dist/

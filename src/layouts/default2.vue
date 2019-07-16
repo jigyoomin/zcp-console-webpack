@@ -199,7 +199,7 @@ export default {
 .toolbar-title::before { opacity: 0; }
 .toolbar-title .logo { width: 140px; /* 131px; */ height: 27px; background: url('../assets/logo.png') no-repeat; }
 >>> .toolbar-title .v-chip { height: 15px; width: 66px; flex-direction: column; font-size: 10px; font-weight: bold; color: white; background-color: #a93193; margin-top: 7px; margin-left: 0px; }
->>> .toolbar-title .v-chip * { font-family: NotoKrR !important; margin-bottom: 1px; margin-bottom: 3px; margin-left: -2px; letter-spacing: -0.1px; }
+>>> .toolbar-title .v-chip * { font-family: 'Noto Sans KR' !important; margin-bottom: 1px; margin-bottom: 3px; margin-left: -2px; letter-spacing: -0.1px; }
 .toolbar-profile { text-transform: none; margin-right: -30px !important; font-size: 16.95px; -webkit-font-smoothing: auto; color: #444444; }
 .toolbar-profile::before { opacity: 0; }
 .toolbar-profile .v-icon { font-size: 20px; padding-top: 5px; margin-left: 5px; }
@@ -245,17 +245,8 @@ export default {
 .content { padding: 20px; }
 .content .select-group { margin-top: -34px; margin-bottom: -10px; }
 .content .ns-select { padding-top: 19px; padding-left: 5px; }
-.content .ns-select-label { font-size: 13.95px !important; font-family: NotoKrR; font-weight: 600 !important; color: #666666; }
+.content .ns-select-label { font-size: 13.95px !important; font-family: 'Noto Sans KR'; font-weight: 600 !important; color: #666666; }
 
-@font-face {
-  font-family: 'NotoKrR';
-  /* font-style: normal; */
-  /* font-weight: 300; */
-  src: local('Noto Sans Regular'), local('NotoSans-Regular'), url(../../static/NotoSans-Regular.eot);
-  src: url(../../static/NotoSans-Regular.eot?#iefix) format('embedded-opentype'),
-  url(../../static/NotoSans-Regular.woff2) format('woff2'),
-  url(../../static/NotoSans-Regular.woff) format('woff');
-}
-.noto-font { font-family: NotoKrR !important; }
+.noto-font { font-family: 'Noto Sans KR' !important; }
 
 </style>
